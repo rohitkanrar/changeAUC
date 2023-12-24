@@ -73,9 +73,9 @@ for(m in 1:reps_){
   } else if(dgp_ == "sparse_diag_cov"){
     s_ <- get_sparse_diag_shift_normal_cov(delta_, n_, p_)
   } else if(dgp_ == "dense_moment"){
-    s_ <- get_dense_shift_normal_moment(delta_, n_, p_)
+    s_ <- get_dense_shift_normal_moment(n_, p_)
   } else if(dgp_ == "sparse_moment"){
-    s_ <- get_sparse_shift_normal_moment(delta_, n_, p_)
+    s_ <- get_sparse_shift_normal_moment(n_, p_)
   } else{
     stop("Invalid Data Generating Process (DGP).")
   }
