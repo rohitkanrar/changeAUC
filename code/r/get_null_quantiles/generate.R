@@ -28,7 +28,7 @@ if(loc_ =='hku'){
 }
 
 out_dir <- paste(out_dir, "epsilon_", epsilon_,
-                 "_eta_", eta_, "/")
+                 "_eta_", eta_, "/", sep = "")
 
 if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
