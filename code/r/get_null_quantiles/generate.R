@@ -20,9 +20,9 @@ knots_ <- opt$k
 loc_ <- opt$location
 
 if(loc_ =='hku'){
-  out_dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/null_quantiles"
+  out_dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/null_quantiles/"
 } else if(loc_ == 'pronto'){
-  out_dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output/null_quantiles"
+  out_dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output/null_quantiles/"
 } else{
   out_dir <- "output/null_quantiles/"
 }
