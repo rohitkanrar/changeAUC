@@ -34,6 +34,7 @@ if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
 
+set.seed(100)
 for(i in 1:100){
   print(i)
   samp_ <- get_sample_gr_max(n = (n_/100), T_ = knots_,
