@@ -85,7 +85,8 @@ get_change_point <- function(sample_, classifier = "RF",
                              split_trim = 0.15,
                              auc_trim = 0.05,
                              perm_pval = FALSE,
-                             no_of_perm = 199){
+                             no_of_perm = 199,
+                             tau = 0.5){
   st.time <- Sys.time()
   n <- dim(sample_)
   p <- n[2]
@@ -107,9 +108,9 @@ get_change_point <- function(sample_, classifier = "RF",
     i <- i + 1
   }
   
-  ch_pt_ <- k + start_ + which.max(auc_)
+  ch_pt_ <- k + start_ + which.max(auc_) - 1
   max_auc_ <- max(auc_)
-  ari_ <- get_ari(n, n %/% 2, ch_pt_)
+  ari_ <- get_ari(n, floor(tau * n), ch_pt_)
   end.time <- Sys.time() - st.time
   print(paste("Detection is finished in", end.time, units(end.time)))
   out_list <- list(auc = auc_, max_auc = max_auc_,

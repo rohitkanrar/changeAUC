@@ -19,9 +19,6 @@ n_ <- opt$n
 knots_ <- opt$k
 loc_ <- opt$location
 
-samp_ <- get_sample_gr_max(n = n_, T_ = knots_,
-                           epsilon = epsilon_, eta = eta_)
-
 if(loc_ =='hku'){
   out_dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/null_quantiles"
 } else if(loc_ == 'pronto'){
@@ -30,9 +27,18 @@ if(loc_ =='hku'){
   out_dir <- "output/null_quantiles/"
 }
 
+out_dir <- paste(out_dir, "epsilon_", epsilon_,
+                 "_eta_", eta_, "/")
 
 if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
-saveRDS(samp_, paste(out_dir, "epsilon_", epsilon_,
-                       "_eta_", eta_, "_.RData", sep = ""))
+
+for(i in 1:100){
+  print(i)
+  samp_ <- get_sample_gr_max(n = (n_/100), T_ = knots_,
+                             epsilon = epsilon_, eta = eta_)
+  saveRDS(samp_, paste(out_dir, "/gr_sample_", round(runif(1) * 1e8, 0),
+                       ".RData", sep = ""))
+  rm(samp_)
+}
