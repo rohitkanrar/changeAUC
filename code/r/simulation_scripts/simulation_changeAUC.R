@@ -1,4 +1,4 @@
-# Rscript -f r/simulation_scripts/simulation_changeAUC.R -d 1 -n 500 -p 500 -r 2 -g "dense_mean" -l "local"
+# Rscript r/simulation_scripts/simulation_changeAUC.R -d 1 -n 500 -p 500 -r 2 -g "dense_mean" -l "local"
 
 source("r/get_change_point/get_change_point_v1.R")
 source("r/generate_data/mean_shift.R")
@@ -49,12 +49,8 @@ if(!dir.exists(out_dir)){
   dir.create(out_dir)
 }
 
-if(delta_ == 0){
-  out_dir <- paste(out_dir, "null_auc/", sep = "")
-} else{
-  out_dir <- paste(out_dir, tolower(dgp_), "/", 
-                   tolower(clf_), "/", sep = "")
-}
+out_dir <- paste(out_dir, tolower(dgp_), "/", 
+                 tolower(clf_), "/", sep = "")
 
 if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
@@ -122,7 +118,8 @@ if(test_)
   out_list$pval <- pval
 
 
-file.name <- paste("p", p_, "n", n_, "d", delta_, "r", reps_, 
+file.name <- paste("p", p_, "n", n_, "d", delta_, "r", reps_,
                    round(runif(1)*1e7, 0), ".RData", sep = "_")
+
 path.name <- paste(out_dir, file.name, sep = "")
 saveRDS(out_list, file = path.name)
