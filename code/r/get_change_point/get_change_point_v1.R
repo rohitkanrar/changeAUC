@@ -1,4 +1,4 @@
-source("r/misc/misc_v1.R")
+source("code/r/misc/misc_v1.R")
 
 get_trained_clf <- function(sample_, n, p, 
                             classifier = "RF",

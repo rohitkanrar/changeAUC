@@ -1,9 +1,9 @@
 # Rscript r/simulation_scripts/simulation_changeAUC.R -d 1 -n 500 -p 500 -r 2 -g "dense_mean" -l "local"
 
-source("r/get_change_point/get_change_point_v1.R")
-source("r/generate_data/mean_shift.R")
-source("r/generate_data/cov_shift.R")
-source("r/generate_data/moment_shift.R")
+source("code/r/get_change_point/get_change_point_v1.R")
+source("code/r/generate_data/mean_shift.R")
+source("code/r/generate_data/cov_shift.R")
+source("code/r/generate_data/moment_shift.R")
 library(optparse)
 
 option_list = list(
