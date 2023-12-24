@@ -5,19 +5,16 @@ get_ari <- function(n, true_ch_pt, ch_pt){
   return(ari)
 }
 
-train_test_split <- function(n, ntr_0, ntr_1, nte_0, nte_1, time_){
-  ind0 <- 1:(time_-1)
-  ind1 <- time_:n
-  indtr_0 <- sample(ind0, ntr_0, replace = F)
-  indtr_1 <- sample(ind1, ntr_1, replace = F)
-  indte_0 <- setdiff(ind0, indtr_0)
-  indte_1 <- setdiff(ind1, indtr_1)
-  return(list(indtr_0=indtr_0, indtr_1=indtr_1,
-              indte_0=indte_0, indte_1=indte_1))
-}
-
-change_trim <- function(auc_mat, iter_t, n, trim = 0.1){
-  bound <- c(floor(2*n*trim), 2*n - floor(2*n*trim))
-  cond <- (iter_t >= bound[1]) & (iter_t <= bound[2])
-  apply(auc_mat[, cond], 1, max)
+get_sample_gr_max <- function(n = 100, T_ = 100000, epsilon = 0.15, 
+                              eta = 0.05){
+  seq_T <- seq(0, 1, length.out = T_)
+  trim <- eta / (1 - 2 * epsilon)
+  trim <- T_ * trim
+  gr <- sapply(1:n, function(i){
+    br <- cumsum(rnorm(T_)) / sqrt(T_)
+    ( (br[T_] - br[2:T_]) / (1 - seq_T[2:T_]) - 
+        br[2:T_] / seq_T[2:T_] ) / sqrt(12 * (1 - 2 * epsilon))
+  })
+  gr <- t(gr[trim:(T_-trim), ])
+  apply(gr, 1, max)
 }
