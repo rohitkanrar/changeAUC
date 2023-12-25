@@ -118,8 +118,8 @@ if(test_)
   out_list$pval <- pval
 
 
-file.name <- paste("p", p_, "n", n_, "d", delta_, "r", reps_,
-                   round(runif(1)*1e7, 0), ".RData", sep = "_")
+file.name <- paste("p", p_, "n", n_, "ep", epsilon_, 
+                   "et", eta_, ".RData", sep = "_")
 
 path.name <- paste(out_dir, file.name, sep = "")
 saveRDS(out_list, file = path.name)
