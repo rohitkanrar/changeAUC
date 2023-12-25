@@ -49,8 +49,14 @@ if(!dir.exists(out_dir)){
   dir.create(out_dir)
 }
 
-out_dir <- paste(out_dir, tolower(dgp_), "/", 
-                 tolower(clf_), "/", sep = "")
+if(delta_ != 0){
+  out_dir <- paste(out_dir, tolower(dgp_), "/", 
+                   tolower(clf_), "/", sep = "")
+} else{
+  out_dir <- paste(out_dir, tolower(dgp_), "/", 
+                   tolower(clf_), "/null/", sep = "")
+}
+
 
 if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
