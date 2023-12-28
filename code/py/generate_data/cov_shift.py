@@ -32,14 +32,24 @@ def get_sparse_shift_normal_cov(delta, n, p, tau=0.5):
     return sample
 
 
-def get_normal_cov(n, p, rho=0.8):
+def get_dense_normal_cov(n, p, rho=0.1):
+    sigma = np.ones((p, p)) * rho
+    np.fill_diagonal(sigma, 1)
+    s = np.random.multivariate_normal(np.zeros(p), sigma, n)
+
+    return s
+
+
+def get_sparse_normal_cov(n, p, rho=0.8):
     sigma = np.diag(np.ones(p))
     for i in np.arange(p):
         for j in np.arange(p):
             if i == j:
                 continue
-            else:
+            elif i < j:
                 sigma[i, j] = np.power(rho, np.abs(i - j))
+            else:
+                sigma[i, j] = sigma[j, i]
     s = np.random.multivariate_normal(np.zeros(p), sigma, n)
 
     return s

@@ -71,15 +71,3 @@ def get_change_point(sample, classifier="FNN",
         print("Change point is detected at", ch_pt_)
     print("Total time taken: %s seconds" % (time() - st_time))
     return out_dict
-
-
-# n = 500
-# p = 10
-# mu1 = np.zeros(p)
-# mu2 = np.ones(p)
-#
-# sigma = np.diag(np.ones(p))
-# s1 = np.random.multivariate_normal(mu1, sigma, n)
-# s2 = np.random.multivariate_normal(mu2, sigma, n)
-# sample = np.concatenate((s1, s2), axis=0)
-# a = get_change_point(sample, perm_pval=True)

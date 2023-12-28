@@ -29,3 +29,7 @@ def get_sparse_shift_normal_mean(delta, n, p, prop=0.01, tau=0.5):
     sample = np.concatenate((s1, s2), axis=0)
 
     return sample
+
+
+def get_normal_mean(n, p):
+    return np.random.multivariate_normal(np.zeros(p), np.diag(np.ones(p)), n)
