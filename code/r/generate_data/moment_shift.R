@@ -19,8 +19,8 @@ get_sparse_shift_normal_moment <- function(n, p, prop = 0.01, tau = 0.5){
 }
 
 get_exponential <- function(n, p){
-  s <- matrix(0, 2*n, p)
+  s <- matrix(0, n, p)
   for(j in 1:p)
-    s[, j] <- rexp(2*n)
+    s[, j] <- rexp(n)
   s
 }

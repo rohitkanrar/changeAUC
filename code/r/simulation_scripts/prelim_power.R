@@ -21,7 +21,7 @@ for(j in 1:nrow(tune)){
 
 d <- 1
 for(dgp__ in dgp_){
-  dir_ <- paste("output", dgp__, "rf/", sep = "/")
+  dir_ <- paste("output/prelim_sim", dgp__, "rf/", sep = "/")
   ari_sig <- matrix(0, nrow(np), nrow(tune))
   rownames_ <- character(nrow(np))
   for(i in 1:nrow(np)){

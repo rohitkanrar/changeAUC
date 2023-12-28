@@ -49,13 +49,8 @@ if(!dir.exists(out_dir)){
   dir.create(out_dir)
 }
 
-if(delta_ != 0){
-  out_dir <- paste(out_dir, tolower(dgp_), "/", 
-                   tolower(clf_), "/", sep = "")
-} else{
-  out_dir <- paste(out_dir, tolower(dgp_), "/", 
-                   tolower(clf_), "/null/", sep = "")
-}
+out_dir <- paste(out_dir, tolower(dgp_), "/",
+                 tolower(clf_), "/", sep = "")
 
 
 if(!dir.exists(out_dir)){
@@ -82,7 +77,14 @@ for(m in 1:reps_){
     s_ <- get_dense_shift_normal_moment(n_, p_)
   } else if(dgp_ == "sparse_moment"){
     s_ <- get_sparse_shift_normal_moment(n_, p_)
-  } else{
+  } else if(dgp_ == "standard_null"){
+    s_ <- get_normal_mean(n_, p_)
+  } else if(dgp_ == "banded_null"){
+    s_ <- get_sparse_normal_cov(n_, p_, rho = delta_)
+  } else if(dgp_ == "exp_null"){
+    s_ <- get_exponential(n_, p_)
+  }
+  else{
     stop("Invalid Data Generating Process (DGP).")
   }
   
@@ -124,8 +126,8 @@ if(test_)
   out_list$pval <- pval
 
 
-file.name <- paste("p", p_, "n", n_, "ep", epsilon_, 
-                   "et", eta_, ".RData", sep = "_")
+file.name <- paste("delta", delta_, "p", p_, "n", n_, "ep", epsilon_, 
+                   "et", eta_, "seed", seed_[1], ".RData", sep = "_")
 
 path.name <- paste(out_dir, file.name, sep = "")
 saveRDS(out_list, file = path.name)

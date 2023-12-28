@@ -44,10 +44,13 @@ get_sparse_normal_cov <- function(n, p, rho = 0.8){
   Sig <- matrix(0, p, p)
   for(i in 1:p){
     for(j in 1:p){
-      if(i == j)
+      if(i == j){
         Sig[i, j] <- 1
-      else
+      } else if(i < j){
         Sig[i, j] <- rho ^ abs(i-j)
+      } else{
+        Sig[i, j] <- Sig[j, i]
+      }
     }
   }
   chol.sig <- chol(Sig)

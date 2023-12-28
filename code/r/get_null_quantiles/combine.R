@@ -1,4 +1,4 @@
-dir_ <- paste("output/null_quantiles/epsilon_", epsilon,
+dir_ <- paste("output/prelim_sim//null_quantiles/epsilon_", epsilon,
               "_eta_", eta, "/", sep = "")
 samp_ <- numeric(0)
 for(file_ in list.files(paste(dir_, sep = ""))){

@@ -32,3 +32,7 @@ get_sparse_shift_normal_mean <- function(delta, n, p, prop = 0.01,
   }
   rbind(s1, s2)
 }
+
+get_normal_mean <- function(n, p){
+  matrix(rnorm(n * p), n, p)
+}

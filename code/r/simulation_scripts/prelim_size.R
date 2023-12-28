@@ -14,7 +14,7 @@ for(j in 1:nrow(tune)){
   cric[j] <- q95
 }
 
-dir_ <- "output/dense_mean/rf/null/"
+dir_ <- "output/prelim_sim/dense_mean/rf/null/"
 size_all <- matrix(0, nrow(np), nrow(tune))
 
 rownames_ <- character(nrow(np))
