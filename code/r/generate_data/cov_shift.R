@@ -13,8 +13,18 @@ get_sparse_shift_normal_cov <- function(delta = 0.8, n, p, tau = 0.5){
   t0 <- floor(n * tau)
   s1 <- matrix(rnorm(t0*p), t0, p)
   s2 <- matrix(rnorm((n-t0)*p), n-t0, p)
-  Sig <- matrix(delta, p, p)
-  diag(Sig) <- rep(1, p)
+  Sig <- matrix(0, p, p)
+  for(i in 1:p){
+    for(j in 1:p){
+      if(i == j){
+        Sig[i, j] <- 1
+      } else if(i < j){
+        Sig[i, j] <- delta ^ abs(i-j)
+      } else{
+        Sig[i, j] <- Sig[j, i]
+      }
+    }
+  }
   chol.sig <- chol(Sig)
   s2 <- s2 %*% chol.sig
   rbind(s1, s2)

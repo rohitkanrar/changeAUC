@@ -1,4 +1,4 @@
-# Rscript r/simulation_scripts/simulation_changeAUC.R -d 1 -n 500 -p 500 -r 2 -g "dense_mean" -l "local"
+# Rscript code/r/simulation_scripts/simulation_changeAUC.R -d 1 -n 500 -p 500 -r 2 -g "dense_mean" -l "local"
 
 source("code/r/get_change_point/get_change_point_v1.R")
 source("code/r/generate_data/mean_shift.R")
