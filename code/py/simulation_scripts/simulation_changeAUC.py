@@ -20,11 +20,15 @@ parser.add_argument("-g", "--dgp")
 parser.add_argument("-c", "--clf", default="FNN")
 parser.add_argument("-e", "--epsilon", type=float, default=0.15)
 parser.add_argument("-a", "--eta", type=float, default=0.05)
-parser.add_argument("-t", "--test", type=bool, default=False)
+parser.add_argument("-t", "--test", default=False)
 parser.add_argument("-l", "--location", default="hku")
 parser.add_argument("-s", "--seed", type=int, default=int(np.round(np.random.random() * 1e7)))
 args = parser.parse_args()
 seed_ = np.arange(args.seed, args.seed + args.reps)
+if args.test == "True":
+    args.test = True
+else:
+    args.test = False
 if args.location == 'hku':
     out_dir = "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/"
 elif args.location == "pronto":
@@ -87,7 +91,7 @@ for m in np.arange(args.reps):
     if args.test:
         pval[m] = out_['pval']
         print(f"---- Change Point for {m+1} iteration with {args.dgp} signal, {args.delta} is {out_['ch_pt']}, and "
-              f"pvalue {args.pval}. ----")
+              f"pvalue {out_['pval']}. ----")
     else:
         print(f"---- Change Point for {m + 1} iteration with {args.dgp} signal, {args.delta} is {out_['ch_pt']}, with "
               f"maximum AUC {out_['max_auc']}. ----")
