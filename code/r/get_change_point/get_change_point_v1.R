@@ -12,19 +12,6 @@ get_trained_clf <- function(sample_, n, p,
   trained_clf <- NULL
   
   if(classifier == "REG_LOGIS"){
-    reg_logistic <- glmnet::cv.glmnet(x_train, factor(y_train), 
-                                      family = "binomial",
-                                      type.measure = "auc", 
-                                      nfolds = 4,
-                                      parallel = TRUE)
-    trained_clf <- reg_logistic
-    y_pred <- glmnet::predict.glmnet(reg_logistic, 
-                                     newx = x_test, 
-                                     s = "lambda.1se",
-                                     type = "response")
-    y_pred <- as.numeric(y_pred)
-  }
-  else if(classifier == "REG_LOGIS_FIXED"){
     reg_logistic <- glmnet::glmnet(x_train, factor(y_train), 
                                    family = "binomial")
     trained_clf <- reg_logistic
