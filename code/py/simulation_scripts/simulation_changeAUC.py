@@ -43,7 +43,7 @@ max_aucs = np.zeros(args.reps)
 pval = np.zeros(args.reps)
 
 for m in np.arange(args.reps):
-    random.seed(seed_[m])
+    random.seed(int(seed_[m]))
     if args.dgp.lower() == "dense_mean":
         s_ = get_dense_shift_normal_mean(args.delta, args.n, args.p)
     elif args.dgp.lower() == "sparse_mean":
