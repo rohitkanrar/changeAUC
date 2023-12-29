@@ -203,13 +203,11 @@ Test_stat <- function(x,y,type){   ## computes the two-sample test statistic, in
 
 library(parallel)
 
-single.changepoint <- function(xmat, skip_t = 10, skim = 0.05,
+single.changepoint <- function(xmat, skip_t = 10,
                                return.acc.only = FALSE){
   n0 <- nrow(xmat) ##basically n
   print("Detection Started...") ## --MY MODIFICATION
-  start_ <- floor(n0 * skim)
-  end_ <- n0 - start_
-  iter_ <- seq(start_, end_, skip_t) ## --MY MODIFICATION
+  iter_ <- sort(c(seq(4, n0-4, skip_t), floor(n0*0.5))) ## --MY MODIFICATION
   
   val.list <- mclapply(iter_, function(ii){ ## --MY MODIFICATION
     tmp <- (n0-ii)*ii/(n0^2) * Test_stat(xmat[1:ii,],xmat[(ii+1):n0,],"K")

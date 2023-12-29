@@ -13,7 +13,6 @@ option_list = list(
   make_option(c("-p", "--p"), type="integer", default=NULL),
   make_option(c("-r", "--reps"), type="integer", default=NULL),
   make_option(c("-g", "--dgp"), type="character", default=NULL),
-  make_option(c("-a", "--eta"), type="double", default=0.05),
   make_option(c("-l", "--location"), type="character", default="hku"),
   make_option(c("-s", "--seed"), type="integer", 
               default=round(runif(1) * 1000000))
@@ -27,7 +26,6 @@ n_ <- opt$n
 p_ <- opt$p
 reps_ <- opt$reps
 dgp_ <- opt$dgp
-eta_ <- opt$eta
 loc_ <- opt$location
 seed_ <- seq(opt$seed, length.out = reps_) 
 skip_t_ <- 10
@@ -79,7 +77,7 @@ for(m in 1:reps_){
   else{
     stop("Invalid Data Generating Process (DGP).")
   }
-  out_ <- single.changepoint(xmat = s_, skip_t = skip_t_, skim = eta_,
+  out_ <- single.changepoint(xmat = s_, skip_t = skip_t_,
                              return.acc.only = TRUE)
   if(m == 1){
     iter_t_ <- out_$iter_t
@@ -94,15 +92,17 @@ for(m in 1:reps_){
     ari <- c(ari, get_ari(n_, floor(n_ * 0.5), ch_pt[m]))
     max_tstat <- c(max_tstat, max(out_$accur))
   }
+  print(paste("Change Point is detected at", ch_pt[m], "with maximum Tstat", 
+              max_tstat[m]))
 }
 
 out_list <- list(tstat_mat = tstat_mat_, ch_pt = ch_pt, ari = ari, 
                  max_tstat = max_tstat, dgp = tolower(dgp_), reps = reps_,
                  p = p_, delta = delta_, n = n_, skip_t = skip_t_, 
-                 trim = eta_, location = loc_, seed = seed_, iter_t = iter_t_)
+                 location = loc_, seed = seed_, iter_t = iter_t_)
 
 file.name <- paste("delta", delta_, "p", p_, "n", n_, "rep", reps_,
-                   "et", eta_, "seed", seed_[1], ".RData", sep = "_")
+                   "seed", seed_[1], ".RData", sep = "_")
 
 path.name <- paste(out_dir, file.name, sep = "")
 saveRDS(out_list, file = path.name)
