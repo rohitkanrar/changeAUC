@@ -212,7 +212,7 @@ single.changepoint <- function(xmat, skip_t = 10,
   val.list <- mclapply(iter_, function(ii){ ## --MY MODIFICATION
     tmp <- (n0-ii)*ii/(n0^2) * Test_stat(xmat[1:ii,],xmat[(ii+1):n0,],"K")
     tmp
-  })
+  }, mc.cores = detectCores())
   b_0 <- iter_[which.max(unlist(val.list))]  ## potential changepoint location
   if(return.acc.only)
     return(list(iter_t = iter_, accur = unlist(val.list), cp = b_0))
