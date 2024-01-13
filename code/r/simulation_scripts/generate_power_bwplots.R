@@ -32,16 +32,20 @@ for(regime in dgp){
   # hddc
   j <- 1
   for(p_ in p){
-    file_path <- paste("output/", regime, "/hddc/",
-                       "delta_", delta[k], "_p_", p_, "_n_", n, 
-                       "_rep_100_seed_1_.RData", sep = "")
-    # out <- readRDS(file_path)
-    tryCatch({
-      out <- readRDS(file_path)
-      ari_bw[[j]][, 2] <- rep(out$ari * as.numeric(out$max_tstat > 0.642), 5)
-    }, warning = function(w){
-      print(paste(file_path, "not found in", regime))
-    })
+    ari_ <- numeric(0)
+    for(s in seq(1, 500, 100)){
+      file_path <- paste("output/", regime, "/hddc/",
+                         "delta_", delta[k], "_p_", p_, "_n_", n, 
+                         "_rep_100_seed_", s, "_.RData", sep = "")
+      # out <- readRDS(file_path)
+      tryCatch({
+        out <- readRDS(file_path)
+        ari_ <- c(ari_, out$ari * as.numeric(out$max_tstat > 0.642))
+      }, warning = function(w){
+        print(paste(file_path, "not found in", regime))
+      })
+    }
+    ari_bw[[j]][, 2] <- ari_
     j <- j + 1
   }
   
