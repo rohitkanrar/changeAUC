@@ -4,6 +4,7 @@ from sklearn import metrics
 import sys
 sys.path.insert(0, "./code/py")
 from get_change_point.get_fnn import get_fnn_model
+from get_change_point.get_cnn import get_vgg16_model, get_vgg19_model
 from misc.misc_v1 import get_ari
 
 
@@ -14,8 +15,14 @@ def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
     y_train = np.concatenate((np.zeros(k), np.ones(k)), axis=0)
     x_test = sample_[np.arange(k, n-k)]
 
-    # if classifier.upper() == "FNN":
-    model = get_fnn_model(p)
+    if classifier.upper() == "FNN":
+        model = get_fnn_model(p)
+    elif classifier.upper() == "VGG16":
+        model = get_vgg16_model(p)
+    elif classifier.upper() == "VGG19":
+        model = get_vgg19_model(p)
+    else:
+        pass
     model.fit(x_train, y_train, epochs=32, batch_size=32, verbose=0)
     pred = model.predict(x_test)[:, 0]
 
@@ -29,7 +36,7 @@ def get_change_point(sample, classifier="FNN",
                      no_of_perm=199,
                      tau=0.5):
     st_time = time()
-    if classifier.upper() == "CNN":
+    if classifier.upper() in ["CNN", "VGG16", "VGG19"]:
         n = sample.shape[0]
         p = sample.shape[1:2]
     else:
