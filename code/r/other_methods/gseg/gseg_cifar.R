@@ -1,13 +1,19 @@
-if(!dir.exists("output/cifar/data")){
+if(Sys.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu"){
+  out_dir <- "/work/LAS/zhanruic-lab/git_repos_data/changeAUC/"
+} else{
+  out_dir <- ""
+}
+out_dir <- paste(out_dir, "output/cifar/data/", sep = "")
+if(!dir.exists(out_dir)){
   library(keras)
   cifar10 <- dataset_cifar10()
-  saveRDS(cifar10, "output/cifar/data/cifar10.RData")
-  cifar10 <- readRDS("cifar_example/data/cifar10.RData")
+  saveRDS(cifar10, paste(out_dir, "cifar10.RData", sep = ""))
+  cifar10 <- readRDS(paste(out_dir, "cifar10.RData", sep = ""))
   
   cifar <- cifar10$train
-  saveRDS(cifar, "output/cifar/data/cifar.RData")
+  saveRDS(cifar, paste(out_dir, "cifar.RData", sep = ""))
 }
-cifar <- readRDS("output/cifar/data/cifar.RData")
+cifar <- readRDS(paste(out_dir, "cifar.RData", sep = ""))
 
 generate_cifar_cp <- function(n1 = 500, n2 = 500, labels = c(3, 8)){
   if(length(labels) == 2){
