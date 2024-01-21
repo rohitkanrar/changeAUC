@@ -29,7 +29,12 @@ if(loc_ =='hku'){
   out_dir <- "output/"
 }
 
-out_dir <- paste(out_dir, "cifar/", labels_[1], "-", labels_[2], "/gseg/", sep = "")
+if(length(labels_) == 2){
+  out_dir <- paste(out_dir, "cifar/", labels_[1], "-", labels_[2], "/gseg/", sep = "")
+} else{
+  out_dir <- paste(out_dir, "cifar/", labels_[1], "-", labels_[1], "/gseg/", sep = "")
+}
+
 
 if(!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
@@ -75,9 +80,14 @@ for(m in 1:reps_){
   gen_$ari <- c(gen_$ari, out_$gen$ari)
 }
 
+if(length(labels_) == 2){
+  file_name <- paste("cifar_", labels_[1], "-", labels_[2], "_n_", n_, "_seed_",
+                     seed_[1], ".RData", sep = "")
+} else{
+  file_name <- paste("cifar_", labels_[1], "-", labels_[1], "_n_", n_, "_seed_",
+                     seed_[1], ".RData", sep = "")
+}
 
-file_name <- paste("cifar_", labels_[1], "-", labels_[2], "_n_", n_, "_seed_",
-                   seed_[1], ".RData", sep = "")
 
 out_list <- list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_,
                  reps = reps_, n = n_)
