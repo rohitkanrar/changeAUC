@@ -1,5 +1,5 @@
 if(Sys.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu"){
-  out_dir <- "/work/LAS/zhanruic-lab/git_repos_data/changeAUC/"
+  out_dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/"
 } else{
   out_dir <- ""
 }
