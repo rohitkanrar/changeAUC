@@ -97,32 +97,32 @@ for(regime in dgp){
   
   library(tidyverse)
   ari_bw_p500_df <- data.frame(ari_bw[[1]])
-  colnames(ari_bw_p500_df) <- c("reg_logis", "hddc", "gseg_orig",
+  colnames(ari_bw_p500_df) <- c("Logis", "Hddc", "gseg_orig",
                                 "gseg_wei", "gseg_maxt", "gseg_gen",
-                                "ann", "rf")
+                                "Fnn", "Rf")
   tidy.df <- ari_bw_p500_df %>%
-    select(reg_logis, hddc, ann, rf, gseg_orig, gseg_wei, 
+    select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
            gseg_maxt, gseg_gen) %>%
     gather(key = "Methods", value = "ARI") %>%
     mutate(name = fct_relevel(Methods, "gseg_orig","gseg_wei", 
                               "gseg_maxt", "gseg_gen",
-                              "hddc", "reg_logis", "ann", "rf"))
+                              "Hddc", "Logis", "Fnn", "Rf"))
   
-  color.choice <- c(reg_logis = "#0072B2", hddc = "#D55E00", 
+  color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00", 
                     gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
                     gseg_maxt = "#56B4E9", gseg_gen = "#009E73",
-                    ann = "#C77CFF", rf = "#7CAE00")
+                    Fnn = "#C77CFF", Rf = "#7CAE00")
   
   bwplots[[1]] <- 
     ggplot(tidy.df, aes(x = Methods, y = ARI, fill = Methods)) +
     geom_boxplot() +
     scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
                                 "gseg_maxt", "gseg_gen",
-                                "hddc", "reg_logis", "ann", "rf")) +
+                                "Hddc", "Logis", "Fnn", "Rf")) +
     scale_fill_manual(values = color.choice,
                       breaks = c("gseg_orig", "gseg_wei", 
                                  "gseg_maxt", "gseg_gen",
-                                 "hddc", "reg_logis", "ann", "rf")) +
+                                 "Hddc", "Logis", "Fnn", "Rf")) +
     theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
   
   ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 500,
@@ -131,11 +131,11 @@ for(regime in dgp){
   
   
   ari_bw_p1000_df <- data.frame(ari_bw[[2]])
-  colnames(ari_bw_p1000_df) <- c("reg_logis", "hddc", "gseg_orig",
+  colnames(ari_bw_p1000_df) <- c("Logis", "Hddc", "gseg_orig",
                                  "gseg_wei", "gseg_maxt", "gseg_gen", 
-                                 "ann", "rf")
+                                 "Fnn", "Rf")
   tidy.df <- ari_bw_p1000_df %>%
-    select(reg_logis, hddc, ann, rf, gseg_orig, gseg_wei, 
+    select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
            gseg_maxt, gseg_gen) %>%
     gather(key = "Methods", value = "ARI")
   
@@ -144,11 +144,11 @@ for(regime in dgp){
     geom_boxplot() +
     scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
                                 "gseg_maxt", "gseg_gen",
-                                "hddc", "reg_logis", "ann", "rf")) +
+                                "Hddc", "Logis", "Fnn", "Rf")) +
     scale_fill_manual(values = color.choice,
                       breaks = c("gseg_orig", "gseg_wei", 
                                  "gseg_maxt", "gseg_gen",
-                                 "hddc", "reg_logis", "ann", "rf")) +
+                                 "Hddc", "Logis", "Fnn", "Rf")) +
     theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
   
   ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 1000,
@@ -204,7 +204,7 @@ all_bwplot <-
             label.x = 0, label.y = 1.025, 
             font.label = list(size=8)) 
 annotate_figure(all_bwplot, 
-                left = text_grob("Average Rand index (ARI)", rot = 90,
+                left = text_grob("Adjusted Rand index (ARI)", rot = 90,
                                  vjust = 1, size = 12),
                 bottom = text_grob("Methods"))
 ggsave("output/plots/power_bwplots/all_boxplots.png",
