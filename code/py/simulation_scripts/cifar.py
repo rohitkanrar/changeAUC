@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import random, sys
+import matplotlib.pyplot as plt
 sys.path.insert(0, "./code/py")
 from get_change_point.get_change_point_v1 import get_change_point
 
@@ -21,3 +22,20 @@ x = x_train[i3 + i8]
 # print(x.shape)
 output = get_change_point(x, classifier="vgg16")
 print(output)
+
+
+# CIFAR Example Images
+
+fig, axes = plt.subplots(1, 4, figsize=(6, 1.5))
+class_labels = ['Cat', 'Deer', 'Dog', 'Horse']
+class_ = [3, 4, 5, 7]
+for i in range(4):
+    ax = axes[i]
+    image = x_train[y_train[:, 0] == class_[i]][10]
+
+    ax.imshow(image)
+    ax.set_title(class_labels[i])
+    ax.axis('off')
+
+plt.savefig('output/plots/cifar.png')
+plt.show()
