@@ -8,3 +8,9 @@ for(file_ in list.files(paste(dir_, sep = ""))){
 }
 
 q95 <- quantile(samp_, 0.95)
+
+qs <- quantile(samp_, c(0.8, 0.9, 0.95, 0.99, 0.995))
+xtable::xtable(matrix(qs, nrow = 1), digits = 3)
+
+xtable::xtable(matrix(q95/sqrt(c(500, 1000, 2000, 5000)) + 0.5, nrow = 1),
+               digits = 3)
