@@ -221,6 +221,28 @@ single.changepoint <- function(xmat, skip_t = 10,
   }
 }
 
+source("code/r/get_change_point/get_multiple_change_point_v1.R") # to import 'seeded_intervals' function
+
+get.sbs.cp <- function(xmat, left, right, skip_t = 10, skim = 0.05,
+                       decay = sqrt(2), n_min_sample = 300){
+  n <- nrow(xmat)
+  seeded_intv <- seeded_intervals(n, decay, T, n_min_sample)
+  output <- vector(mode = "list", length = nrow(seeded_intv))
+  seeded_tstat <- numeric(nrow(seeded_intv))
+  seeded_cp <- numeric(nrow(seeded_intv))
+  for(i in 1:nrow(seeded_intv)){
+    intv <- seeded_intv[i, ]
+    out_ <- single.changepoint(xmat = xmat[left:right, ], 
+                                      skip_t = skip_t,
+                               return.acc.only = TRUE)
+    output[[i]] <- out_
+    output[[i]]$interval <- intv
+    seeded_tstat[i] <- max(out_$accur)
+    seeded_cp[i] <- out_$cp
+  }
+  return(list(output = output, max_seeded_tstat = max(seeded_tstat),
+              seeded_cp = seeded_cp[which.max(seeded_tstat)]))
+}
 
 multiple.cp <- function(xmat, left, right,
                         skip_t = 10, skim = 0.05,
@@ -228,20 +250,24 @@ multiple.cp <- function(xmat, left, right,
   # browser()
   print(paste("----- Detecting cp between", left, right, sep = " "))
   if((right - left) >= n_min_sample){
-    out_ <- single.changepoint(xmat = xmat[left:right, ], skip_t = skip_t,
-                               skim = skim, return.acc.only = TRUE)
+    out_ <- get.sbs.cp(xmat = xmat, left = left, right = right, 
+                       skip_t = skip_t, skim = skim,
+                       n_min_sample = n_min_sample)
+    max_seeded_tstat <- out_$max_seeded_tstat
+    seeded_cp <- out_$seeded_cp
+    out_ <- out_$output
     if(left == 1){
-      cp_ <- out_$cp
+      cp_ <- seeded_cp
     }
     else{
-      cp_ <- left + out_$cp
+      cp_ <- left + seeded_cp
     }
     output_counter <<- output_counter + 1
     multiple_cp_output[[output_counter]] <<- list(interval = c(left, right),
                                                   cp = cp_,
-                                                  max_stat = max(out_$accur),
+                                                  max_stat = max_seeded_tstat,
                                                   output = out_)
-    if(max(out_$accur) >= 0.642){
+    if(max_seeded_tstat >= 0.642){ # cutoff taken from the 2021 arXiv version
       if((cp_ - left) >= n_min_sample){
         multiple_cp <<- rbind(multiple_cp, 
                               multiple.cp(xmat, left = left, right = cp_,
@@ -250,7 +276,8 @@ multiple.cp <- function(xmat, left, right,
       }
       if((right - cp_) >= n_min_sample){
         multiple_cp <<- rbind(multiple_cp, 
-                              multiple.cp(xmat, left = (cp_+1), right = right,
+                              multiple.cp(xmat, left = (cp_+1), 
+                                          right = right,
                                           skip_t = skip_t, skim = skim,
                                           n_min_sample = n_min_sample))
       }

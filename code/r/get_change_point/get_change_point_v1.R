@@ -73,7 +73,7 @@ get_change_point <- function(sample_, classifier = "RF",
                              auc_trim = 0.05,
                              perm_pval = FALSE,
                              no_of_perm = 199,
-                             tau = 0.5){
+                             tau = 0.5, verbose = TRUE){
   st.time <- Sys.time()
   n <- dim(sample_)
   p <- n[2]
@@ -99,12 +99,14 @@ get_change_point <- function(sample_, classifier = "RF",
   max_auc_ <- max(auc_)
   ari_ <- get_ari(n, floor(tau * n), ch_pt_)
   end.time <- Sys.time() - st.time
-  print(paste("Detection is finished in", end.time, units(end.time)))
+  if(verbose)
+    print(paste("Detection is finished in", end.time, units(end.time)))
   out_list <- list(auc = auc_, max_auc = max_auc_,
                    ch_pt = ch_pt_, ari = ari_)
   out_list$pred <- out_$pred
   if(perm_pval){
-    print("Permutation is started...")
+    if(verbose)
+      print("Permutation is started...")
     st.time <- Sys.time()
     pred_array <- out_$pred
     null_aucs_mat <- array(0, dim = c(nte, no_of_perm))
@@ -120,12 +122,15 @@ get_change_point <- function(sample_, classifier = "RF",
     pval_ <- (sum(null_max_auc > max_auc_) + 1) / 
       (no_of_perm + 1)
     end.time <- Sys.time() - st.time
-    print(paste("Permutation is finished in", end.time, units(end.time)))
-    print(paste("Change point is detected at", ch_pt_, "with p-value",
-                pval_))
+    if(verbose){
+      print(paste("Permutation is finished in", end.time, units(end.time)))
+      print(paste("Change point is detected at", ch_pt_, "with p-value",
+                  pval_))
+    }
     out_list$pval <- pval_
   } else{
-    print(paste("Change point is detected at", ch_pt_))
+    if(verbose)
+      print(paste("Change point is detected at", ch_pt_))
   }
   return(out_list)
 }
