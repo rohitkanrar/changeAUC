@@ -13,7 +13,6 @@ dat <- read.csv(paste(out.dir,
                       "data/us_stocks/stable_stocks.csv", sep = ""), 
                 row.names = 1, header = TRUE)
 n <- nrow(dat)
-dat <- dat[1:100, 1:5]
 output <- multiple.changepoint(dat, left = 1, right = nrow(dat), skip_t = 10,
                                skim = 0.05, n_min_sample = 50)
 
