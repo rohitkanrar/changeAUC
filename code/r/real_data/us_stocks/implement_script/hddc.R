@@ -1,7 +1,7 @@
 source("code/r/other_methods/hddc/hddc.R")
 
 if(Sys.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu"){
-  out.dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/git_repos_data/changeAUC/"
+  out.dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/"
 } else if(Sys.getenv("SLURM_SUBMIT_HOST") == "hpc2021"){
   out.dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/"
 } else{
