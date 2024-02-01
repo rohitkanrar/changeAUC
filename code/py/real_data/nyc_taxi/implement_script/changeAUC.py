@@ -5,20 +5,23 @@ import sys
 import numpy as np
 sys.path.insert(0, "./code/py")
 if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
-    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/output")
-    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/data")
+    root_dir = "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/"
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output")
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/data")
 elif os.getenv("SLURM_SUBMIT_HOST") == "hpc2021":
+    root_dir = "/lustre1/u/rohitisu/git_repos_data/changeAUC/"
     sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/output")
     sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/data")
 else:
+    root_dir = ""
     sys.path.insert(0, "./output")
     sys.path.insert(0, "./data")
 from get_change_point.get_multiple_change_point_v1 import get_multiple_change_point
 from get_change_point.get_change_point_v1 import get_change_point
 
-out_dir = "output/real_data/nyc_taxi/"
+out_dir = root_dir + "output/real_data/nyc_taxi/"
 
-with open("data/fhv_nyc/heatmaps_numeric.pkl", "rb") as f:
+with open(root_dir + "data/fhv_nyc/heatmaps_numeric.pkl", "rb") as f:
     heatmaps_array = pkl.load(f)
 
 random.seed(100)
