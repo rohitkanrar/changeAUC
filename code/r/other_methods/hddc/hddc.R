@@ -223,7 +223,7 @@ single.changepoint <- function(xmat, skip_t = 10,
 
 source("code/r/get_change_point/get_multiple_change_point_v1.R") # to import 'seeded_intervals' function
 
-get.sbs.cp <- function(xmat, left, right, skip_t = 10, skim = 0.05,
+get.sbs.cp <- function(xmat, skip_t = 10, skim = 0.05,
                        decay = sqrt(2), n_min_sample = 300){
   n <- nrow(xmat)
   seeded_intv <- seeded_intervals(n, decay, T, n_min_sample)
@@ -232,7 +232,7 @@ get.sbs.cp <- function(xmat, left, right, skip_t = 10, skim = 0.05,
   seeded_cp <- numeric(nrow(seeded_intv))
   for(i in 1:nrow(seeded_intv)){
     intv <- seeded_intv[i, ]
-    out_ <- single.changepoint(xmat = xmat[left:right, ], 
+    out_ <- single.changepoint(xmat = xmat, 
                                       skip_t = skip_t,
                                return.acc.only = TRUE)
     output[[i]] <- out_
@@ -241,7 +241,8 @@ get.sbs.cp <- function(xmat, left, right, skip_t = 10, skim = 0.05,
     seeded_cp[i] <- out_$cp
   }
   return(list(output = output, max_seeded_tstat = max(seeded_tstat),
-              seeded_cp = seeded_cp[which.max(seeded_tstat)]))
+              seeded_cp = seeded_cp[which.max(seeded_tstat)],
+              seeded_interval = seeded_intv[which.max(seeded_tstat), ]))
 }
 
 multiple.cp <- function(xmat, left, right,
@@ -250,20 +251,22 @@ multiple.cp <- function(xmat, left, right,
   # browser()
   print(paste("----- Detecting cp between", left, right, sep = " "))
   if((right - left) >= n_min_sample){
-    out_ <- get.sbs.cp(xmat = xmat, left = left, right = right, 
+    out_ <- get.sbs.cp(xmat = xmat[left:right, ], 
                        skip_t = skip_t, skim = skim,
                        n_min_sample = n_min_sample)
     max_seeded_tstat <- out_$max_seeded_tstat
     seeded_cp <- out_$seeded_cp
+    seeded_intv <- out_$seeded_interval
     out_ <- out_$output
     if(left == 1){
-      cp_ <- seeded_cp
+      cp_ <- seeded_intv[1] + seeded_cp - 1
     }
     else{
-      cp_ <- left + seeded_cp
+      cp_ <- left + seeded_intv[1] + seeded_cp - 1
     }
     output_counter <<- output_counter + 1
     multiple_cp_output[[output_counter]] <<- list(interval = c(left, right),
+                                                  seeded_interval = seeded_intv,
                                                   cp = cp_,
                                                   max_stat = max_seeded_tstat,
                                                   output = out_)

@@ -29,7 +29,7 @@ get_sbs_cp <- function(sample_, classifier = "RF",
                             split_trim = 0.15,
                             auc_trim = 0.05,
                             no_of_perm = 199,
-                            min_length = 300, decay = sqrt(2)){
+                            min_length = 500, decay = sqrt(2)){
   n <- nrow(sample_)
   seeded_intv <- seeded_intervals(n, decay, T, min_length)
   output <- vector(mode = "list", length = nrow(seeded_intv))
@@ -38,18 +38,19 @@ get_sbs_cp <- function(sample_, classifier = "RF",
   
   for(i in 1:nrow(seeded_intv)){
     intv <- seeded_intv[i, ]
-    output[[i]]$output <- 
-      get_change_point(sample_ = sample_[intv[1]:intv[2], ], 
+    out_ <- get_change_point(sample_ = sample_[intv[1]:intv[2], ], 
                                     classifier = classifier,
                                     split_trim = split_trim, 
                                     auc_trim = auc_trim,
                                     perm_pval = FALSE, verbose = FALSE)
+    output[[i]]$output <- out_
     output[[i]]$interval <- seeded_intv[i, ]
-    seeded_auc[i] <- output[[i]]$max_auc
-    seeded_cp[i] <- output[[i]]$ch_pt
+    seeded_auc[i] <- out_$max_auc
+    seeded_cp[i] <- out_$ch_pt
   }
   return(list(output = output, max_seeded_auc = max(seeded_auc),
-              seeded_cp = seeded_cp[which.max(seeded_auc)]))
+              seeded_cp = seeded_cp[which.max(seeded_auc)],
+              seeded_interval = seeded_intv[which.max(seeded_auc), ]))
 }
 
 get_perm_cutoff <- function(sample_, classifier = "RF",
@@ -73,7 +74,7 @@ get_multiple_cp <- function(sample_, left,  right,
                             split_trim = 0.15,
                             auc_trim = 0.05,
                             no_of_perm = 199,
-                            min_length = 300, decay = sqrt(2),
+                            min_length = 500, decay = sqrt(2),
                             return_output = "all"){
   # browser()
   print(paste("----- Detecting cp between", left, right, sep = " "))
@@ -85,21 +86,25 @@ get_multiple_cp <- function(sample_, left,  right,
     print("Permutation Ended and SBS is started.")
     out_ <- get_sbs_cp(sample_ = sample_[left:right, ], classifier = classifier,
                        split_trim = split_trim, auc_trim = auc_trim,
-                       no_of_perm = no_of_perm, decay = decay)
+                       no_of_perm = no_of_perm, min_length = min_length,
+                       decay = decay)
     max_seeded_auc <- out_$max_seeded_auc
     seeded_cp <- out_$seeded_cp
+    seeded_intv <- out_$seeded_interval
     out_ <- out_$output
     # browser()
     if(left == 1){
-      cp_ <- seeded_cp
+      cp_ <- seeded_intv[1] + seeded_cp - 1
     }
     else{
-      cp_ <- left + seeded_cp
+      cp_ <- left + seeded_intv[1] + seeded_cp - 1
     }
     if(return_output == "all"){
       output_counter <<- output_counter + 1
       multiple_cp_output[[output_counter]] <<- list(interval = c(left, right),
+                                                    seeded_interval = seeded_intv,
                                                     seeded_cp = seeded_cp,
+                                                    cp = cp_,
                                                     max_seeded_auc = max_seeded_auc,
                                                     perm_cutoff = cutoff,
                                                     output = out_)
@@ -107,11 +112,14 @@ get_multiple_cp <- function(sample_, left,  right,
     
     if(max_seeded_auc >= cutoff){
       if(return_output == "significant"){
-        print(paste("Significant change point is detected at", left+seeded_cp,
-                    "with Maximum AUC", max_seeded_auc))
+        print(paste("Significant change point is detected at", cp_,
+                    "with Maximum AUC", max_seeded_auc, "in", (seeded_intv+left)[1]-1,
+                    (seeded_intv+left)[2]-1))
         output_counter <<- output_counter + 1
         multiple_cp_output[[output_counter]] <<- list(interval = c(left, right),
+                                                      seeded_interval = seeded_intv,
                                                       seeded_cp = seeded_cp,
+                                                      cp = cp_,
                                                       max_seeded_auc = max_seeded_auc,
                                                       perm_cutoff = cutoff,
                                                       output = out_)

@@ -35,3 +35,5 @@ gseg_wrapper <- function(dat, method = "euclidean", p = 2,
   
   list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_)
 }
+
+
