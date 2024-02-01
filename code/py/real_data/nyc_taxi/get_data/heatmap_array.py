@@ -1,6 +1,6 @@
 import os
 import sys
-
+import pickle as pkl
 import numpy as np
 from PIL import Image
 
@@ -26,3 +26,7 @@ heatmaps_array = np.zeros((len(os.listdir(heatmap_dir)), img.shape[0], img.shape
 for i, file in enumerate(sorted(os.listdir(heatmap_dir))):
     heatmaps_array[i, :, :, :] = np.asarray(Image.open(heatmap_dir + '/' + file).resize((img_res, img_res),
                                                                                Image.LANCZOS)) / 255.0
+
+with open("data/fhv_nyc/heatmaps_numeric.pkl", "wb") as fp:
+    pkl.dump(heatmaps_array, fp)
+
