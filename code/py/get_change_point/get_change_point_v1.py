@@ -18,9 +18,11 @@ def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
     if classifier.upper() == "FNN":
         model = get_fnn_model(p)
     elif classifier.upper() == "VGG16":
-        model = get_vgg16_model(p)
+        model = get_vgg16_model()
     elif classifier.upper() == "VGG19":
-        model = get_vgg19_model(p)
+        model = get_vgg19_model()
+    elif classifier.upper() == "VGG16_BW":
+        model = get_vgg16_model(bw=True)
     else:
         pass
     model.fit(x_train, y_train, epochs=32, batch_size=32, verbose=0)
@@ -36,7 +38,7 @@ def get_change_point(sample, classifier="FNN",
                      no_of_perm=199,
                      tau=0.5):
     st_time = time()
-    if classifier.upper() in ["CNN", "VGG16", "VGG19"]:
+    if classifier.upper() in ["CNN", "VGG16", "VGG19", "VGG16_BW"]:
         n = sample.shape[0]
         p = sample.shape[1:2]
     else:

@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model, Sequential
 callback = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True)
 
 
-def get_vgg16_model(shape):
+def get_vgg16_model(bw=False):
     """
     Input:
     - p: dimension of input sample; int
@@ -21,7 +21,11 @@ def get_vgg16_model(shape):
     This is a basic wrapper which returns model.compile object created using tensorflow.
 
     """
-    model = VGG16(include_top=False, input_shape=(32, 32, 3))
+    if bw:
+        shape = (32, 32, 1)
+    else:
+        shape = (32, 32, 3)
+    model = VGG16(include_top=False, input_shape=shape)
     # mark loaded layers as not trainable
     for layer in model.layers:
         layer.trainable = False

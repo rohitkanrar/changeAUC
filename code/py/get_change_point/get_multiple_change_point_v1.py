@@ -104,7 +104,7 @@ def get_multiple_cp(sample, left, right, classifier="FNN", split_trim=0.15, auc_
                          'output': out_}
             multiple_output.append(temp_dict)
 
-        if max_seeded_auc >= cutoff:
+        if max_seeded_auc > cutoff:
             if return_output == "significant":
                 temp_dict = {'interval': np.array([left, right]),
                              'seeded_interval': seeded_intv,
