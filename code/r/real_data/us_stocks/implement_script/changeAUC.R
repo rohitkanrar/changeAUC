@@ -37,5 +37,5 @@ output_reg_logis <- get_multiple_change_point(as.matrix(dat), left = 1,
                                        return_output = "all")
 
 saveRDS(output_reg_logis,
-        paste(out.dir, "output/real_data/us_stocks/rf_sbs_us_stocks.RData", 
+        paste(out.dir, "output/real_data/us_stocks/reg_logis_sbs_us_stocks.RData", 
               sep = ""))
