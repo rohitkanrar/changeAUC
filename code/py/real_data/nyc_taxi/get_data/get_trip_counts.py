@@ -4,8 +4,16 @@ import sys, os
 import numpy as np
 import pickle as pkl
 sys.path.insert(0, "./code/py")
-sys.path.insert(0, "./data")
-sys.path.insert(0, "./output")
+if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/output")
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/data")
+elif os.getenv("SLURM_SUBMIT_HOST") == "hpc2021":
+    sys.path.insert(0, "./code/py")
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/output")
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/data")
+else:
+    sys.path.insert(0, "./output")
+    sys.path.insert(0, "./data")
 from misc.misc_v1 import generate_df_from_record
 
 trip_counts = np.zeros(1)

@@ -1,10 +1,20 @@
-from PIL import Image
+import os
+import sys
+
 import numpy as np
-import os, sys
-import pickle as pkl
+from PIL import Image
+
 sys.path.insert(0, "./code/py")
-sys.path.insert(0, "./output")
-sys.path.insert(0, "./data")
+if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/output")
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repo_data/changeAUC/data")
+elif os.getenv("SLURM_SUBMIT_HOST") == "hpc2021":
+    sys.path.insert(0, "./code/py")
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/output")
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/data")
+else:
+    sys.path.insert(0, "./output")
+    sys.path.insert(0, "./data")
 
 heatmap_dir = "data/fhv_nyc/daily_heatmaps"
 img_res = 32
