@@ -33,11 +33,11 @@ random.seed(100)
 # jan_start = date_list.index("23-01-01-00.jpg")
 # jan_end = date_list.index("23-01-31-23.jpg")
 
-detect_global_multiple = get_multiple_change_point(heatmaps_array, classifier="VGG16", split_trim=0.15, auc_trim=0.05,
+detect_global_multiple = get_multiple_change_point(heatmaps_array[365:1827], classifier="VGG16", split_trim=0.15, auc_trim=0.05,
                                                    no_of_perm=199, min_length=500, decay=np.sqrt(2),
                                                    return_output="all")
 
-with open(out_dir + "vgg16_sbs_nyc_taxi.pkl", "wb") as fp:
+with open(out_dir + "vgg16_sbs_nyc_taxi_short.pkl", "wb") as fp:
     pkl.dump(detect_global_multiple, fp)
 
 
