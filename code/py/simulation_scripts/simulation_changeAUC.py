@@ -45,6 +45,7 @@ ch_pt = np.zeros(args.reps)
 ari = np.zeros(args.reps)
 max_aucs = np.zeros(args.reps)
 pval = np.zeros(args.reps)
+runtime = np.zeros(args.reps)
 
 for m in np.arange(args.reps):
     random.seed(int(seed_[m]))
@@ -88,6 +89,7 @@ for m in np.arange(args.reps):
     ch_pt[m] = out_['ch_pt']
     ari[m] = out_['ari']
     max_aucs[m] = out_['max_auc']
+    runtime[m] = out_['runtime']
     if args.test:
         pval[m] = out_['pval']
         print(f"---- Change Point for {m+1} iteration with {args.dgp} signal, {args.delta} is {out_['ch_pt']}, and "
@@ -100,7 +102,7 @@ out_dict = {
     "aucs": aucs, "ch_pt": ch_pt, "ari": ari, "max_aucs": max_aucs, "pred": pred,
     "dgp": args.dgp.lower(), "reps": args.reps, "p": args.p, "delta": args.delta, "n": args.n,
     "clf": args.clf.lower(), "split_tril": args.epsilon, "auc_trim": args.eta, "prem_pval": args.test,
-    "location": args.location, "seed": args.seed
+    "location": args.location, "seed": args.seed, "runtime": runtime
 }
 if args.test:
     out_dict['pval'] = pval

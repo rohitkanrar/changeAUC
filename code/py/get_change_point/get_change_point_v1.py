@@ -58,7 +58,8 @@ def get_change_point(sample, classifier="FNN",
     ch_pt_ = k + start_ + np.argmax(auc_)
     max_auc_ = np.max(auc_)
     ari_ = get_ari(n, int(np.floor(tau * n)), ch_pt_)
-    print("Detection is finished in %s seconds" % (time() - st_time))
+    en_time = time() - st_time
+    print("Detection is finished in %s seconds" % en_time)
     out_dict = {
         "auc": auc_, "max_auc": max_auc_, "ch_pt": ch_pt_, "ari": ari_, "pred": pred
     }
@@ -73,10 +74,12 @@ def get_change_point(sample, classifier="FNN",
                 null_auc_mat[j, b] = metrics.roc_auc_score(y_test_, pred[perm_ind_])
         null_auc_max = null_auc_mat.max(axis=0)
         pval_ = (sum(null_auc_max >= max_auc_) + 1) / (no_of_perm + 1)
-        print("Permutation is finished in %s seconds" % (time() - st_time_perm))
+        en_time = time() - st_time
+        print("Permutation is finished in %s seconds" % en_time)
         print("Change point is detected at", ch_pt_, "with p-value", pval_)
         out_dict['pval'] = pval_
     else:
         print("Change point is detected at", ch_pt_)
-    print("Total time taken: %s seconds" % (time() - st_time))
+    print("Total time taken: %s seconds" % en_time)
+    out_dict['runtime'] = en_time
     return out_dict
