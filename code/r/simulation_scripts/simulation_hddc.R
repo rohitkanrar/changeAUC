@@ -13,6 +13,7 @@ option_list = list(
   make_option(c("-p", "--p"), type="integer", default=NULL),
   make_option(c("-r", "--reps"), type="integer", default=NULL),
   make_option(c("-g", "--dgp"), type="character", default=NULL),
+  make_option(c("-k", "--skip"), type="integer", default=10),
   make_option(c("-l", "--location"), type="character", default="hku"),
   make_option(c("-s", "--seed"), type="integer", 
               default=round(runif(1) * 1000000))
@@ -28,7 +29,7 @@ reps_ <- opt$reps
 dgp_ <- opt$dgp
 loc_ <- opt$location
 seed_ <- seq(opt$seed, length.out = reps_) 
-skip_t_ <- 10
+skip_t_ <- opt$skip
 
 if(loc_ =='hku'){
   out_dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/"
