@@ -100,6 +100,7 @@ for(m in 1:reps_){
     ari <- out_$ari
     max_aucs <- out_$max_auc
     pred <- out_$pred
+    runtime <- out_$runtime
     if(test_)
       pval <- out_$pval
   }
@@ -109,6 +110,7 @@ for(m in 1:reps_){
     ari <- c(ari, out_$ari)
     max_aucs <- c(max_aucs, out_$max_auc)
     pred <- rbind(pred, out_$pred)
+    runtime <- c(runtime, out_$runtime)
     if(test_)
       pval <- c(pval, out_$pval)
   }
@@ -120,7 +122,8 @@ out_list <- list(aucs = aucs, ch_pt = ch_pt, ari = ari, max_aucs = max_aucs,
                  pred = pred, dgp = tolower(dgp_), reps = reps_,
                  p = p_, delta = delta_, n = n_, 
                  clf = tolower(clf_), split_trim = epsilon_, auc_trim = eta_,
-                 perm_pval = test_, location = loc_, seed = seed_)
+                 perm_pval = test_, location = loc_, seed = seed_,
+                 runtime = runtime)
 
 if(test_)
   out_list$pval <- pval

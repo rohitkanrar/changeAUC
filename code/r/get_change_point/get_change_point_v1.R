@@ -102,7 +102,7 @@ get_change_point <- function(sample_, classifier = "RF",
   if(verbose)
     print(paste("Detection is finished in", end.time, units(end.time)))
   out_list <- list(auc = auc_, max_auc = max_auc_,
-                   ch_pt = ch_pt_, ari = ari_)
+                   ch_pt = ch_pt_, ari = ari_, runtime = end.time)
   out_list$pred <- out_$pred
   if(perm_pval){
     if(verbose)
@@ -122,6 +122,7 @@ get_change_point <- function(sample_, classifier = "RF",
     pval_ <- (sum(null_max_auc > max_auc_) + 1) / 
       (no_of_perm + 1)
     end.time <- Sys.time() - st.time
+    out_list$runtime <- end.time
     if(verbose){
       print(paste("Permutation is finished in", end.time, units(end.time)))
       print(paste("Change point is detected at", ch_pt_, "with p-value",
