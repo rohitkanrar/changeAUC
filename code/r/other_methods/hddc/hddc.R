@@ -205,6 +205,7 @@ library(parallel)
 
 single.changepoint <- function(xmat, skip_t = 10,
                                return.acc.only = FALSE){
+  st.time <- Sys.time()
   n0 <- nrow(xmat) ##basically n
   print("Detection Started...") ## --MY MODIFICATION
   iter_ <- sort(c(seq(4, n0-4, skip_t), floor(n0*0.5))) ## --MY MODIFICATION
@@ -214,8 +215,10 @@ single.changepoint <- function(xmat, skip_t = 10,
     tmp
   }, mc.cores = detectCores())
   b_0 <- iter_[which.max(unlist(val.list))]  ## potential changepoint location
+  end.time <- Sys.time() - st.time
   if(return.acc.only)
-    return(list(iter_t = iter_, accur = unlist(val.list), cp = b_0))
+    return(list(iter_t = iter_, accur = unlist(val.list), cp = b_0,
+                runtime = end.time))
   else{
     return(b_0) ## --MY MODIFICATION
   }

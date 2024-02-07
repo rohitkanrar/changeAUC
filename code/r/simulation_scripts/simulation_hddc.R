@@ -85,13 +85,16 @@ for(m in 1:reps_){
     ch_pt <- out_$iter_t[which.max(out_$accur)]
     ari <- get_ari(n_, floor(n_ * 0.5), ch_pt)
     max_tstat <- max(out_$accur)
+    runtime <- out_$runtime
   }
   else{
     tstat_mat_ <- rbind(tstat_mat_, out_$accur)
     ch_pt <- c(ch_pt, out_$iter_t[which.max(out_$accur)])
     ari <- c(ari, get_ari(n_, floor(n_ * 0.5), ch_pt[m]))
     max_tstat <- c(max_tstat, max(out_$accur))
+    runtime <- c(runtime, out_$runtime)
   }
+  print(paste("Detection is finished in", runtime[m], "seconds"))
   print(paste("Change Point is detected at", ch_pt[m], "with maximum Tstat", 
               max_tstat[m]))
 }
@@ -99,7 +102,8 @@ for(m in 1:reps_){
 out_list <- list(tstat_mat = tstat_mat_, ch_pt = ch_pt, ari = ari, 
                  max_tstat = max_tstat, dgp = tolower(dgp_), reps = reps_,
                  p = p_, delta = delta_, n = n_, skip_t = skip_t_, 
-                 location = loc_, seed = seed_, iter_t = iter_t_)
+                 location = loc_, seed = seed_, iter_t = iter_t_,
+                 runtime = runtime)
 
 file.name <- paste("delta", delta_, "p", p_, "n", n_, "rep", reps_,
                    "seed", seed_[1], ".RData", sep = "_")
