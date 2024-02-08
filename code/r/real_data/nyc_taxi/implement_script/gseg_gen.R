@@ -9,7 +9,7 @@ if(Sys.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu"){
 }
 
 dat <- readRDS(paste(out.dir,
-                     "data/fhv_nyc/heatmaps_vectorized.RData", sep = ""))
+                     "data/fhv_nyc/heatmaps_color_vectorized.RData", sep = ""))
 n <- nrow(dat)
 set.seed(100)
 output_gen <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
