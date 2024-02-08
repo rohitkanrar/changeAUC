@@ -21,7 +21,7 @@ from get_change_point.get_change_point_v1 import get_change_point
 
 out_dir = root_dir + "output/real_data/nyc_taxi/"
 
-with open(root_dir + "data/fhv_nyc/heatmaps_numeric.pkl", "rb") as f:
+with open(root_dir + "data/fhv_nyc/heatmaps_color_numeric.pkl", "rb") as f:
     heatmaps_array = pkl.load(f)
 
 random.seed(100)
