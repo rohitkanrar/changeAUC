@@ -4,6 +4,7 @@ import sys
 
 sys.path.insert(0, "./output")
 sys.path.insert(0, "./data")
+sys.path.insert(0, "./output")
 
 
 def get_ari(n, true_ch_pt, ch_pt):
