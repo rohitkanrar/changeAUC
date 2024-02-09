@@ -53,6 +53,7 @@ orig_ <- list(cp = numeric(0), maxZ = numeric(0),
 wei_ <- orig_
 maxt_ <- orig_
 gen_ <- orig_
+runtime <- numeric(reps_)
 
 for(m in 1:reps_){
   set.seed(seed_[m])
@@ -84,6 +85,7 @@ for(m in 1:reps_){
     stop("Invalid Data Generating Process (DGP).")
   }
   out_ <- gseg_wrapper(s_)
+  runtime[m] <- out_$runtime
   
   orig_$cp <- c(orig_$cp, out_$orig$cp)
   orig_$maxZ <- c(orig_$maxZ, out_$orig$maxZ)
@@ -111,7 +113,7 @@ for(m in 1:reps_){
 
 out.list <- list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_,
                  dgp = dgp_, p = p_, delta = delta_, reps = reps_, n = n_, 
-                 location = loc_, seed = seed_)
+                 location = loc_, seed = seed_, runtime = runtime)
 
 file.name <- paste("delta", delta_, "p", p_, "n", n_, "rep", reps_,
                    "seed", seed_[1], ".RData", sep = "_")

@@ -7,8 +7,10 @@ gseg_wrapper <- function(dat, method = "euclidean", p = 2,
   n <- nrow(dat)
   samp.dist <- dist(dat, method = method, p = p)
   samp.e1 <- ade4::mstree(samp.dist)
+  st.time <- Sys.time()
   out <- gSeg::gseg1(n, samp.e1, statistics = statistics,
               pval.perm = pval_perm, pval.appr = FALSE, B = 199)
+  en.time <- Sys.time() - st.time
   orig_ <- list()
   wei_ <- list()
   maxt_ <- list()
@@ -42,5 +44,6 @@ gseg_wrapper <- function(dat, method = "euclidean", p = 2,
     gen_$ari <- get_ari(n, floor(n/2), gen_$cp)
   }
   
-  list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_)
+  list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_,
+       runtime = en.time)
 }
