@@ -46,6 +46,8 @@ orig_ <- list(cp = numeric(0), tstat = numeric(0), maxZ = numeric(0),
 wei_ <- orig_
 maxt_ <- orig_
 gen_ <- orig_
+runtime <- numeric(reps_)
+
 for(m in 1:reps_){
   print(paste("Replication Number:", m, "----------------------------"))
   set.seed(seed_[m])
@@ -54,6 +56,7 @@ for(m in 1:reps_){
                           labels = labels_)
   
   out_ <- gseg_wrapper(s_)
+  runtime[m] <- out_$runtime
   
   orig_$cp <- c(orig_$cp, out_$orig$cp)
   orig_$tstat <- rbind(orig_$tstat, out_$orig$tstat)
@@ -90,7 +93,7 @@ if(length(labels_) == 2){
 
 
 out_list <- list(orig = orig_, wei = wei_, maxt = maxt_, gen = gen_,
-                 reps = reps_, n = n_)
+                 reps = reps_, n = n_, runtime = runtime)
 
 path_name <- paste(out_dir, file_name, sep = "")
 saveRDS(out_list, file = path_name)
