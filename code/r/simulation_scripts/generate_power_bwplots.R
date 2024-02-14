@@ -205,8 +205,8 @@ all_bwplot <-
             font.label = list(size=8)) 
 annotate_figure(all_bwplot, 
                 left = text_grob("Adjusted Rand index (ARI)", rot = 90,
-                                 vjust = 1, size = 12),
-                bottom = text_grob("Methods"))
+                                 vjust = 1, size = 12)
+                )
 ggsave("output/plots/power_bwplots/all_boxplots.png",
        dpi = 700, limitsize = F, scale = 1.5,
-       width = 6.75, height = 5.5, units = "in")
+       width = 6.75, height = 6.5, units = "in")
