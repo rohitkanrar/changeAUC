@@ -57,7 +57,7 @@ perm_cutoff_gseg <- function(dat, statistics = "o", no_of_perm = 199){
       tstats[i] <- tmp$gen$maxZ
     }
   }
-  return(max(tstats))
+  return(quantile(tstats, 0.9))
 }
 
 multiple_cp_gseg <- function(dat, left, right, no_of_perm = 199,

@@ -66,7 +66,7 @@ get_perm_cutoff <- function(sample_, classifier = "RF",
                             perm_pval = FALSE, verbose = FALSE)
     aucs[i] <- tmp$max_auc
   }
-  return(max(aucs))
+  return(quantile(aucs, 0.9))
 }
 
 get_multiple_cp <- function(sample_, left,  right,
