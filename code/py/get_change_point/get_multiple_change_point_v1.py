@@ -70,7 +70,7 @@ def get_perm_cutoff(sample, classifier="FNN",
         tmp = get_change_point(sample=sample[ind], classifier=classifier,
                                split_trim=split_trim, auc_trim=auc_trim, perm_pval=False)
         aucs[i] = tmp['max_auc']
-    return np.max(aucs)
+    return np.quantile(aucs, 0.9)
 
 
 def get_multiple_cp(sample, left, right, classifier="FNN", split_trim=0.15, auc_trim=0.05,
