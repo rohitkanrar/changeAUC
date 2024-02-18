@@ -3,8 +3,18 @@ import pandas as pd
 import pickle as pkl
 import numpy as np
 sys.path.insert(0, "./code/py")
-sys.path.insert(0, "./output")
-sys.path.insert(0, "./data")
+if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
+    root_dir = "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/"
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output")
+    sys.path.insert(0, "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/data")
+elif os.getenv("SLURM_SUBMIT_HOST") == "hpc2021":
+    root_dir = "/lustre1/u/rohitisu/git_repos_data/changeAUC/"
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/output")
+    sys.path.insert(0, "/lustre1/u/rohitisu/git_repos_data/changeAUC/data")
+else:
+    root_dir = ""
+    sys.path.insert(0, "./output")
+    sys.path.insert(0, "./data")
 from get_change_point.get_multiple_change_point_v1 import get_multiple_change_point, get_sbs_cp
 
 
