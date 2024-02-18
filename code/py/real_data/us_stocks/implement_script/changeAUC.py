@@ -1,7 +1,7 @@
 import sys, random
 import pandas as pd
 import pickle as pkl
-import numpy as np
+import os
 sys.path.insert(0, "./code/py")
 if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
     root_dir = "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/"
