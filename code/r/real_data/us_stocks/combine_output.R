@@ -18,6 +18,13 @@ library(reticulate)
 # py_install("pandas")
 pd <- import("pandas")
 fnn_stock <- pd$read_pickle("output/real_data/us_stocks/fnn_sbs_us_stocks.pkl")
+fnn_stock_cp <- numeric(0)
+fnn_stock_max_auc <- numeric(0)
+
+for(i in 1:length(fnn_stock[[2]])){
+  fnn_stock_cp <- c(fnn_stock_cp, fnn_stock[[2]][[i]]$cp)
+  fnn_stock_max_auc <- c(fnn_stock_cp, fnn_stock[[2]][[i]]$max_seeded_auc)
+}
 
 rf_stock <- readRDS("output/real_data/us_stocks/rf_sbs_us_stocks.RData")
 rf_stock_cp <- numeric(0)
@@ -74,6 +81,7 @@ for(i in 1:length(hddc_stock[[2]])){
                            hddc_stock[[2]][[i]]$pval)
 }
 
+dates_[sort(fnn_stock_cp)]
 dates_[sort(rf_stock_cp)]
 dates_[sort(hddc_stock_cp)]
 dates_[sort(orig_stock_cp)]

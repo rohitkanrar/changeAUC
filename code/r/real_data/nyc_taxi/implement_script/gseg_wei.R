@@ -14,7 +14,7 @@ dat <- readRDS(paste(out.dir,
 n <- nrow(dat)
 set.seed(100)
 output_wei <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
-                                        n_min_sample = 500, statistics = "w")
+                                        n_min_sample = 400, statistics = "w")
 saveRDS(output_wei,
         paste(out.dir, "output/real_data/nyc_taxi/gseg_wei_sbs_nyc_taxi.RData", 
               sep = ""))

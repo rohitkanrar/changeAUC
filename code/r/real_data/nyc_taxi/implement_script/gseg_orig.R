@@ -14,25 +14,7 @@ dat <- readRDS(paste(out.dir,
 n <- nrow(dat)
 set.seed(100)
 output_orig <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
-                                         n_min_sample = 500, statistics = "o")
+                                         n_min_sample = 400, statistics = "o")
 saveRDS(output_orig,
         paste(out.dir, "output/real_data/nyc_taxi/gseg_orig_sbs_nyc_taxi.RData", 
               sep = ""))
-
-# output_wei <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
-#                                          n_min_sample = 500, statistics = "w")
-# saveRDS(output_wei,
-#         paste(out.dir, "output/real_data/nyc_taxi/gseg_wei_sbs_nyc_taxi.RData", 
-#               sep = ""))
-# 
-# output_gen <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
-#                                          n_min_sample = 500, statistics = "g")
-# saveRDS(output_gen,
-#         paste(out.dir, "output/real_data/nyc_taxi/gseg_gen_sbs_nyc_taxi.RData", 
-#               sep = ""))
-# 
-# output_maxt <- multiple_changepoint_gseg(dat, 1, nrow(dat), no_of_perm = 199, 
-#                                          n_min_sample = 500, statistics = "m")
-# saveRDS(output_maxt,
-#         paste(out.dir, "output/real_data/nyc_taxi/gseg_maxt_sbs_nyc_taxi.RData", 
-#               sep = ""))
