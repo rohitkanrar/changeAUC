@@ -15,8 +15,8 @@ from misc.misc_heatmaps import generate_df_from_record, generate_daily_heatmaps_
 
 nyc_map = gpd.read_file("data/fhv_nyc/taxi_zones.zip")
 
-file_list = ["fhv_tripdata_2020-03.parquet", "fhv_tripdata_2020-04.parquet", "fhv_tripdata_2021-08.parquet",
-             "fhv_tripdata_2021-12.parquet", "fhv_tripdata_2022-03.parquet", "fhv_tripdata_2022-04.parquet"]
+file_list = ["fhv_tripdata_2019-01.parquet", "fhv_tripdata_2019-02.parquet", "fhv_tripdata_2019-08.parquet",
+             "fhv_tripdata_2019-09.parquet", "fhv_tripdata_2020-03.parquet", "fhv_tripdata_2020-04.parquet"]
 
 for file_ in file_list:
     print(file_)
