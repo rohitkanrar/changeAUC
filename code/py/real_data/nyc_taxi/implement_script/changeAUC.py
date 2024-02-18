@@ -27,7 +27,7 @@ with open(root_dir + "data/fhv_nyc/heatmaps_color_numeric.pkl", "rb") as f:
 random.seed(100)
 
 detect_global_multiple = get_multiple_change_point(heatmaps_array, classifier="VGG16", split_trim=0.15, auc_trim=0.05,
-                                                   no_of_perm=199, min_length=500, decay=np.sqrt(2),
+                                                   no_of_perm=199, min_length=400, decay=np.sqrt(2),
                                                    return_output="all")
 
 with open(out_dir + "vgg16_sbs_nyc_taxi.pkl", "wb") as fp:
