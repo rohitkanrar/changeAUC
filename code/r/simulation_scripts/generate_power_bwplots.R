@@ -1,5 +1,6 @@
 # main power bwplots
 source("code/r/misc/misc_v1.R")
+library(tidyverse)
 epsilon <- 0.15
 eta <- 0.05
 source("code/r/get_null_quantiles/combine.R")
@@ -10,8 +11,12 @@ n_methods <- 8
 reps_total <- 500
 dgp <- c("dense_mean", "sparse_mean", "dense_cov", "sparse_cov",
             "dense_diag_cov", "sparse_diag_cov", "dense_moment", "sparse_moment")
-delta <- c(2, 2, 0.1, 0.8, 5, 5, 1, 1)
 
+DGP <- c("Dense Mean", "Sparse Mean", "Dense Cov", "Banded Cov",
+         "Dense Diag Cov", "Sparse Diag Cov", "Dense Distribution", 
+         "Sparse Distribution")
+delta <- c(2, 2, 0.1, 0.8, 5, 5, 1, 1)
+big_df <- data.frame()
 k <- 0
 for(regime in dgp){
   ari_bw <- vector(mode = "list", length = 2)
@@ -90,123 +95,176 @@ for(regime in dgp){
     j <- j + 1
   }
   
+  test_df <- data.frame(ARI = as.vector(ari_bw[[1]]),
+                        method = rep(c("Logis", "Hddc", "gseg_orig",
+                                       "gseg_wei", "gseg_maxt", "gseg_gen",
+                                       "Fnn", "Rf"), 
+                                     each = reps_total),
+                        dgp = rep(paste(DGP[k], "(p = 500)"), 
+                                  reps_total * n_methods))
+  test_df <- rbind(test_df,
+                   data.frame(ARI = as.vector(ari_bw[[2]]),
+                              method = rep(c("Logis", "Hddc", "gseg_orig",
+                                             "gseg_wei", "gseg_maxt", "gseg_gen",
+                                             "Fnn", "Rf"), 
+                                           each = reps_total),
+                              dgp = rep(paste(DGP[k], "(p = 1000)"), 
+                                        reps_total * n_methods)))
+  big_df <- rbind(big_df, test_df)
   
-  root_dir <- "output/plots/power_bwplots/"
-  
-  bwplots <- vector(mode = "list", length = 2)
-  
-  library(tidyverse)
-  ari_bw_p500_df <- data.frame(ari_bw[[1]])
-  colnames(ari_bw_p500_df) <- c("Logis", "Hddc", "gseg_orig",
-                                "gseg_wei", "gseg_maxt", "gseg_gen",
-                                "Fnn", "Rf")
-  tidy.df <- ari_bw_p500_df %>%
-    select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
-           gseg_maxt, gseg_gen) %>%
-    gather(key = "Methods", value = "ARI") %>%
-    mutate(name = fct_relevel(Methods, "gseg_orig","gseg_wei", 
-                              "gseg_maxt", "gseg_gen",
-                              "Hddc", "Logis", "Fnn", "Rf"))
-  
-  color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00", 
-                    gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
-                    gseg_maxt = "#56B4E9", gseg_gen = "#009E73",
-                    Fnn = "#C77CFF", Rf = "#7CAE00")
-  
-  bwplots[[1]] <- 
-    ggplot(tidy.df, aes(x = Methods, y = ARI, fill = Methods)) +
-    geom_boxplot() +
-    scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
-                                "gseg_maxt", "gseg_gen",
-                                "Hddc", "Logis", "Fnn", "Rf")) +
-    scale_fill_manual(values = color.choice,
-                      breaks = c("gseg_orig", "gseg_wei", 
-                                 "gseg_maxt", "gseg_gen",
-                                 "Hddc", "Logis", "Fnn", "Rf")) +
-    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
-  
-  ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 500,
-               ".png", sep = ""), width = 6, height = 4)
-  
-  
-  
-  ari_bw_p1000_df <- data.frame(ari_bw[[2]])
-  colnames(ari_bw_p1000_df) <- c("Logis", "Hddc", "gseg_orig",
-                                 "gseg_wei", "gseg_maxt", "gseg_gen", 
-                                 "Fnn", "Rf")
-  tidy.df <- ari_bw_p1000_df %>%
-    select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
-           gseg_maxt, gseg_gen) %>%
-    gather(key = "Methods", value = "ARI")
-  
-  bwplots[[2]] <- 
-    ggplot(tidy.df, aes(x = Methods, y = ARI, fill = Methods)) +
-    geom_boxplot() +
-    scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
-                                "gseg_maxt", "gseg_gen",
-                                "Hddc", "Logis", "Fnn", "Rf")) +
-    scale_fill_manual(values = color.choice,
-                      breaks = c("gseg_orig", "gseg_wei", 
-                                 "gseg_maxt", "gseg_gen",
-                                 "Hddc", "Logis", "Fnn", "Rf")) +
-    theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
-  
-  ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 1000,
-               ".png", sep = ""), width = 6, height = 4)
-  if(regime == "dense_mean"){
-    dense_mean_boxplot = bwplots
-  } else if(regime == "sparse_mean"){
-    sparse_mean_boxplot = bwplots
-  } else if(regime == "dense_cov"){
-    dense_cov_boxplot = bwplots
-  } else if(regime == "sparse_cov"){
-    sparse_cov_boxplot = bwplots
-  } else if(regime == "dense_diag_cov"){
-    dense_diag_cov_boxplot = bwplots
-  } else if(regime == "sparse_diag_cov"){
-    sparse_diag_cov_boxplot = bwplots
-  } else if(regime == "dense_moment"){
-    dense_moment_boxplot = bwplots
-  } else if(regime == "sparse_moment"){
-    sparse_moment_boxplot = bwplots
-  } 
+  # root_dir <- "output/plots/power_bwplots/"
+  # 
+  # bwplots <- vector(mode = "list", length = 2)
+  # 
+  # library(tidyverse)
+  # ari_bw_p500_df <- data.frame(ari_bw[[1]])
+  # colnames(ari_bw_p500_df) <- c("Logis", "Hddc", "gseg_orig",
+  #                               "gseg_wei", "gseg_maxt", "gseg_gen",
+  #                               "Fnn", "Rf")
+  # tidy.df <- ari_bw_p500_df %>%
+  #   select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
+  #          gseg_maxt, gseg_gen) %>%
+  #   gather(key = "Methods", value = "ARI") %>%
+  #   mutate(name = fct_relevel(Methods, "gseg_orig","gseg_wei", 
+  #                             "gseg_maxt", "gseg_gen",
+  #                             "Hddc", "Logis", "Fnn", "Rf"))
+  # 
+  # color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00", 
+  #                   gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
+  #                   gseg_maxt = "#56B4E9", gseg_gen = "#009E73",
+  #                   Fnn = "#C77CFF", Rf = "#7CAE00")
+  # 
+  # bwplots[[1]] <- 
+  #   ggplot(tidy.df, aes(x = Methods, y = ARI, fill = Methods)) +
+  #   geom_boxplot() +
+  #   scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
+  #                               "gseg_maxt", "gseg_gen",
+  #                               "Hddc", "Logis", "Fnn", "Rf")) +
+  #   scale_fill_manual(values = color.choice,
+  #                     breaks = c("gseg_orig", "gseg_wei", 
+  #                                "gseg_maxt", "gseg_gen",
+  #                                "Hddc", "Logis", "Fnn", "Rf")) +
+  #   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
+  # 
+  # ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 500,
+  #              ".png", sep = ""), width = 6, height = 4)
+  # 
+  # 
+  # 
+  # ari_bw_p1000_df <- data.frame(ari_bw[[2]])
+  # colnames(ari_bw_p1000_df) <- c("Logis", "Hddc", "gseg_orig",
+  #                                "gseg_wei", "gseg_maxt", "gseg_gen", 
+  #                                "Fnn", "Rf")
+  # tidy.df <- ari_bw_p1000_df %>%
+  #   select(Logis, Hddc, Fnn, Rf, gseg_orig, gseg_wei, 
+  #          gseg_maxt, gseg_gen) %>%
+  #   gather(key = "Methods", value = "ARI")
+  # 
+  # bwplots[[2]] <- 
+  #   ggplot(tidy.df, aes(x = Methods, y = ARI, fill = Methods)) +
+  #   geom_boxplot() +
+  #   scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
+  #                               "gseg_maxt", "gseg_gen",
+  #                               "Hddc", "Logis", "Fnn", "Rf")) +
+  #   scale_fill_manual(values = color.choice,
+  #                     breaks = c("gseg_orig", "gseg_wei", 
+  #                                "gseg_maxt", "gseg_gen",
+  #                                "Hddc", "Logis", "Fnn", "Rf")) +
+  #   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))
+  # 
+  # ggsave(paste(root_dir,"/", regime, "_boxplot_p_", 1000,
+  #              ".png", sep = ""), width = 6, height = 4)
+  # if(regime == "dense_mean"){
+  #   dense_mean_boxplot = bwplots
+  # } else if(regime == "sparse_mean"){
+  #   sparse_mean_boxplot = bwplots
+  # } else if(regime == "dense_cov"){
+  #   dense_cov_boxplot = bwplots
+  # } else if(regime == "sparse_cov"){
+  #   sparse_cov_boxplot = bwplots
+  # } else if(regime == "dense_diag_cov"){
+  #   dense_diag_cov_boxplot = bwplots
+  # } else if(regime == "sparse_diag_cov"){
+  #   sparse_diag_cov_boxplot = bwplots
+  # } else if(regime == "dense_moment"){
+  #   dense_moment_boxplot = bwplots
+  # } else if(regime == "sparse_moment"){
+  #   sparse_moment_boxplot = bwplots
+  # } 
 }
 
 # combined bwplot
 
-library(ggpubr)
-all_bwplot <- 
-  ggarrange(dense_mean_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
-            dense_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
-            dense_diag_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
-            dense_moment_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
-            dense_mean_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
-            dense_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
-            dense_diag_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
-            dense_moment_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
-            sparse_mean_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
-            sparse_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
-            sparse_diag_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
-            sparse_moment_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
-            sparse_mean_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
-            sparse_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
-            sparse_diag_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
-            sparse_moment_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
-            nrow = 4, ncol = 4, common.legend = TRUE,
-            labels = list("Dense Mean (p = 500)","Dense Cov (p = 500)", 
-                          "Dense Diag Cov (p = 500)", "Dense Distribution (p = 500)",
-                          "Dense Mean (p = 1000)","Dense Cov (p = 1000)", 
-                          "Dense Diag Cov (p = 1000)", "Dense Distribution (p = 1000)",
-                          "Sparse Mean (p = 500)", "Banded Cov (p = 500)", 
-                          "Sparse Diag Cov (p = 500)", "Sparse Distribution (p = 500)",
-                          "Sparse Mean (p = 1000)", "Banded Cov (p = 1000)", 
-                          "Sparse Diag Cov (p = 1000)", "Sparse Distribution (p = 1000)"), 
-            label.x = 0, label.y = 1.025, 
-            font.label = list(size=8)) 
-annotate_figure(all_bwplot, 
-                left = text_grob("Adjusted Rand index (ARI)", rot = 90,
-                                 vjust = 1, size = 12)
-                )
+# library(ggpubr)
+# all_bwplot <- 
+#   ggarrange(dense_mean_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
+#             dense_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
+#             dense_diag_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
+#             dense_moment_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
+#             dense_mean_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
+#             dense_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
+#             dense_diag_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
+#             dense_moment_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
+#             sparse_mean_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
+#             sparse_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
+#             sparse_diag_cov_boxplot[[1]] + rremove("ylab") + rremove("xlab"), 
+#             sparse_moment_boxplot[[1]] + rremove("ylab") + rremove("xlab"),
+#             sparse_mean_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
+#             sparse_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
+#             sparse_diag_cov_boxplot[[2]] + rremove("ylab") + rremove("xlab"), 
+#             sparse_moment_boxplot[[2]] + rremove("ylab") + rremove("xlab"),
+#             nrow = 4, ncol = 4, common.legend = TRUE,
+#             labels = list("Dense Mean (p = 500)","Dense Cov (p = 500)", 
+#                           "Dense Diag Cov (p = 500)", "Dense Distribution (p = 500)",
+#                           "Dense Mean (p = 1000)","Dense Cov (p = 1000)", 
+#                           "Dense Diag Cov (p = 1000)", "Dense Distribution (p = 1000)",
+#                           "Sparse Mean (p = 500)", "Banded Cov (p = 500)", 
+#                           "Sparse Diag Cov (p = 500)", "Sparse Distribution (p = 500)",
+#                           "Sparse Mean (p = 1000)", "Banded Cov (p = 1000)", 
+#                           "Sparse Diag Cov (p = 1000)", "Sparse Distribution (p = 1000)"), 
+#             label.x = 0, label.y = 1.025, 
+#             font.label = list(size=8)) 
+# annotate_figure(all_bwplot, 
+#                 left = text_grob("Adjusted Rand index (ARI)", rot = 90,
+#                                  vjust = 1, size = 12)
+#                 )
+# ggsave("output/plots/power_bwplots/all_boxplots.png",
+#        dpi = 700, limitsize = F, scale = 1.5,
+#        width = 6.75, height = 6.5, units = "in")
+
+
+color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00",
+                  gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
+                  gseg_maxt = "#56B4E9", gseg_gen = "#009E73",
+                  Fnn = "#C77CFF", Rf = "#7CAE00")
+bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
+  geom_boxplot(aes(fill=method)) +
+  facet_wrap(~ factor(dgp, 
+                      levels = c("Dense Mean (p = 500)", "Dense Cov (p = 500)", "Dense Diag Cov (p = 500)",
+                                 "Dense Distribution (p = 500)", "Dense Mean (p = 1000)", 
+                                 "Dense Cov (p = 1000)", "Dense Diag Cov (p = 1000)",
+                                 "Dense Distribution (p = 1000)", "Sparse Mean (p = 500)", 
+                                 "Banded Cov (p = 500)", "Sparse Diag Cov (p = 500)", 
+                                 "Sparse Distribution (p = 500)", "Sparse Mean (p = 1000)", 
+                                 "Banded Cov (p = 1000)", "Sparse Diag Cov (p = 1000)", 
+                                 "Sparse Distribution (p = 1000)")
+  ), ncol = 4) +
+  labs(fill = "Methods") +
+  scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
+                              "gseg_maxt", "gseg_gen",
+                              "Hddc", "Logis", "Fnn", "Rf")) +
+  scale_fill_manual(values = color.choice,
+                    breaks = c("gseg_orig", "gseg_wei", 
+                               "gseg_maxt", "gseg_gen",
+                               "Hddc", "Logis", "Fnn", "Rf")) +
+  theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+        legend.position = "top", legend.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        strip.text = element_text(size = 10)) +
+  ylab("Adjusted Rand Index (ARI)") + xlab(NULL) 
+
 ggsave("output/plots/power_bwplots/all_boxplots.png",
        dpi = 700, limitsize = F, scale = 1.5,
-       width = 6.75, height = 6.5, units = "in")
+       width = 6.5, height = 6.5, units = "in")
+
+
