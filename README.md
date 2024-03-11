@@ -88,3 +88,31 @@ Approximate Time (CPU): 250 seconds.
 ```
 python code/py/simulation_scripts/simulation_cifar.py -r 10 -n 1000 -g 35 -c VGG16 -l local -s 2024
 ```
+
+## Real Data Examples:
+
+To run the real data examples presented in Section 5, we refer to following the steps outlined below.
+
+### US Stock Data
+
+The following R script performs multiple change point detection using Seeded Binary Segmentation with `changeAUC` as the test statistic and two classifiers, `Logis` and `Rf`.
+
+```
+source("code/r/real_data/us_stocks/implement_script/changeAUC.R")
+```
+
+The following Python script performs the same task above with `Fnn` classifier.
+
+```
+python code/py/real_data/us_stocks/implement_script/changeAUC.py
+```
+
+Implementation of the other competitive methods can be found in the respective folders of the above scripts.
+
+### NYC Taxi Data
+
+The following Python code performs multiple change point detection using Seeded Binary Segmentation with `changeAUC` as the test statistic and `vgg16` as the classifier.
+
+```
+python code/py/real_data/nyc_taxi/implement_script/changeAUC.py   
+```
