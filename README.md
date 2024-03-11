@@ -5,7 +5,7 @@ This repository contains all the codes used in the following paper titled
 
 ## Contents
 
-- /code: This folder contains all the R and Python code used in the paper.
+- `/code`: This folder contains all the R and Python code used in the paper.
 - /output: This folder contains the output saved in various steps.
 - /data: This folder contains data used in the paper. Data sets are already stored and it can be processed with reproducible code available in the folder. 
 
