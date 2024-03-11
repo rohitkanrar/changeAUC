@@ -1,11 +1,8 @@
 *.Rproj.user
 *.Rhistory
-*.RData
 *.Ruserdata
 *.Rproj
 .Rproj.user
-/output
 /.idea
 *.pyc
-*.csv
-/data
+*.parquet
