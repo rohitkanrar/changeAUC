@@ -59,7 +59,7 @@ source("code/r/requirements.R")
 
 ```
 conda create -n "hd_cpd" python=3.7.13
-pip install code/py/requirements.txt
+pip install -r code/py/requirements.txt
 ```
 
 ## Test Cases:
