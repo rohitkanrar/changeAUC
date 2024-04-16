@@ -1,5 +1,5 @@
 This repository contains all the codes used in the following paper titled 
-- Kanrar, R., Jiang, F., Cai, Z. (2024+). Model-free Change-point Detection Using Modern Classifiers. 
+- Kanrar, R., Jiang, F., Cai, Z. (2024+). Model-free Change-point Detection Using Modern Classifiers. [arXiv](https://arxiv.org/abs/2404.06995)
 
 
 
@@ -117,3 +117,6 @@ The following Python code performs multiple change point detection using Seeded 
 ```
 python code/py/real_data/nyc_taxi/implement_script/changeAUC.py   
 ```
+
+## Acknowledgements 
+We thank the authors of [Chakraborty, Zhang 2021+](https://arxiv.org/abs/2105.08976) for sharing the R code implementation of their proposed method.
