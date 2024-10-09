@@ -42,8 +42,7 @@ get_trained_clf <- function(sample_, n, p,
     y_pred <- as.numeric(y_pred)
   }
   else if(classifier == "RF"){
-    rf <- randomForest::randomForest(x = x_train, y = factor(y_train), 
-                                     ntree = 200, maxnodes = 8)
+    rf <- randomForest::randomForest(x = x_train, y = factor(y_train))
     trained_clf <- rf
     y_pred <- predict(rf, newdata = x_test, type = "prob")
     y_pred <- as.numeric(y_pred[, 2])

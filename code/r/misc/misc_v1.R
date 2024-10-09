@@ -18,3 +18,25 @@ get_sample_gr_max <- function(n = 100, T_ = 100000, epsilon = 0.15,
   gr <- t(gr[trim:(T_-trim), ])
   apply(gr, 1, max)
 }
+
+get_cusum_k <- function(pred, k, nte){
+  cusum <- sum(pred[(k+1):(nte)])/(nte-k) - sum(pred[1:k])/k
+  cusum <- cusum * sqrt(k * (nte-k) / (nte))
+  
+  cusum
+}
+
+get_cusum <- function(pred, n = 1000, auc_trim = 0.05){
+  # browser()
+  nte <- length(pred)
+  start_ <- floor(n * auc_trim)
+  end_ <- nte - floor(auc_trim * n)
+  cusums <- numeric(length(start_:end_))
+  i <- 1
+  for(k in start_:end_){
+    cusums[i] <- get_cusum_k(pred, k, nte)
+    i <- i + 1
+  }
+  
+  cusums
+}
