@@ -106,8 +106,8 @@ for i in np.arange(repl_):
     filename = f"cifar_{case_}_n_{n}_seed_{int(seed_[i])}.pkl"
     # filename = f"mnist_{case_}_test.pkl"
 
-    # with open(out_dir + filename, "wb") as fp:
-    #     pickle.dump(output, fp)
+    with open(out_dir + filename, "wb") as fp:
+        pickle.dump(output, fp)
 
 out_dict = {
     "aucs": aucs, "ch_pt": ch_pt, "ari": ari, "max_aucs": max_aucs, "pred": pred,
