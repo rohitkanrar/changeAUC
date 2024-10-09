@@ -12,3 +12,20 @@ def get_ari(n, true_ch_pt, ch_pt):
     estimated = np.concatenate((np.zeros(ch_pt), np.ones((n - ch_pt))), axis=0)
 
     return ari(truth, estimated)
+
+def get_cusum_k(pred, k, nte):
+    cusum = np.sum(pred[(k):(nte)]) / (nte - k) - np.sum(pred[0:(k)]) / k
+    cusum = cusum * np.sqrt(k * (nte - k) / nte)
+    
+    return cusum
+
+def get_cusum(pred, n=1000, auc_trim=0.05):
+    nte = len(pred)
+    start_ = int(np.floor(auc_trim * n))
+    end_ = nte - int(np.floor(auc_trim * n))
+    cusums = np.zeros(nte - 2 * start_)
+    
+    for i, k in enumerate(range(start_, end_)):
+        cusums[i] = get_cusum_k(pred, k, nte)
+    
+    return cusums

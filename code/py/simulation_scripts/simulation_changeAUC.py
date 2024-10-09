@@ -101,7 +101,7 @@ for m in np.arange(args.reps):
 out_dict = {
     "aucs": aucs, "ch_pt": ch_pt, "ari": ari, "max_aucs": max_aucs, "pred": pred,
     "dgp": args.dgp.lower(), "reps": args.reps, "p": args.p, "delta": args.delta, "n": args.n,
-    "clf": args.clf.lower(), "split_tril": args.epsilon, "auc_trim": args.eta, "prem_pval": args.test,
+    "clf": args.clf.lower(), "split_trim": args.epsilon, "auc_trim": args.eta, "prem_pval": args.test,
     "location": args.location, "seed": args.seed, "runtime": runtime
 }
 if args.test:

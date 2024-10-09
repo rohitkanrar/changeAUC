@@ -6,6 +6,7 @@ sys.path.insert(0, "./code/py")
 from get_change_point.get_fnn import get_fnn_model
 from get_change_point.get_cnn import get_vgg16_model, get_vgg19_model
 from misc.misc_v1 import get_ari
+from misc.misc_v1 import get_cusum
 
 
 def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
@@ -36,7 +37,7 @@ def get_change_point(sample, classifier="FNN",
                      auc_trim=0.05,
                      perm_pval=False,
                      no_of_perm=199,
-                     tau=0.5):
+                     tau=0.5, require_cusum=False):
     st_time = time()
     if classifier.upper() in ["CNN", "VGG16", "VGG19", "VGG16_BW"]:
         n = sample.shape[0]
@@ -54,30 +55,45 @@ def get_change_point(sample, classifier="FNN",
     for i, j in enumerate(np.arange(start_, end_)):
         y_test_ = np.concatenate((np.zeros(j), np.ones(nte - j)), axis=0)
         auc_[i] = metrics.roc_auc_score(y_test_, pred)
+    if require_cusum:
+        cusum_ = get_cusum(pred=pred, n=n, auc_trim=auc_trim)
 
     ch_pt_ = k + start_ + np.argmax(auc_)
     max_auc_ = np.max(auc_)
+    if require_cusum:
+        max_cusum_ = np.max(cusum_)
     ari_ = get_ari(n, int(np.floor(tau * n)), ch_pt_)
     en_time = time() - st_time
     print("Detection is finished in %s seconds" % en_time)
     out_dict = {
         "auc": auc_, "max_auc": max_auc_, "ch_pt": ch_pt_, "ari": ari_, "pred": pred
     }
+    if require_cusum:
+        out_dict["cusum"] = cusum_
+        out_dict["max_cusum"] = max_cusum_
     if perm_pval:
         st_time_perm = time()
         print("Permutation is started...")
-        null_auc_mat = np.zeros((nte, no_of_perm))
+        null_auc_mat = np.zeros((len(auc_), no_of_perm))
+        null_cusum_mat = np.zeros((len(auc_), no_of_perm))
         for b in np.arange(no_of_perm):
             perm_ind_ = np.random.permutation(np.arange(nte))
-            for j in np.arange(start_, end_):
+            for i, j in enumerate(np.arange(start_, end_)):
                 y_test_ = np.concatenate((np.zeros(j), np.ones(nte - j)), axis=0)
-                null_auc_mat[j, b] = metrics.roc_auc_score(y_test_, pred[perm_ind_])
+                null_auc_mat[i, b] = metrics.roc_auc_score(y_test_, pred[perm_ind_])
+            if require_cusum:
+                null_cusum_mat[:, b] = get_cusum(pred=pred[perm_ind_], n=n, auc_trim=auc_trim)
         null_auc_max = null_auc_mat.max(axis=0)
+        null_cusum_max = null_cusum_mat.max(axis=0)
         pval_ = (sum(null_auc_max >= max_auc_) + 1) / (no_of_perm + 1)
+        if require_cusum:
+            pval_cusum_ = (sum(null_cusum_max >= max_cusum_) + 1) / (no_of_perm + 1)
         en_time = time() - st_time
         print("Permutation is finished in %s seconds" % en_time)
         print("Change point is detected at", ch_pt_, "with p-value", pval_)
         out_dict['pval'] = pval_
+        if require_cusum:
+            out_dict['pval_cusum'] = pval_cusum_
     else:
         print("Change point is detected at", ch_pt_)
     print("Total time taken: %s seconds" % en_time)
