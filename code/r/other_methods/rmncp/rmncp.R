@@ -10,8 +10,7 @@ get_rmncp_wrapper <- function(dat){
   st.time <- Sys.time()
   out <- new_MWBS(y = dat, z = dat, s = 1, e = N, flag = 0, S = NULL, 
                   Dval = NULL, pos = 1, alpha = 1, beta = N, h = 8*h)
-  end.time <- Sys.time() - st.time
-  out["runtime"] = end.time
-  out["runtime_units"] = units(end.time)
+  end.time <- Sys.time()
+  out["runtime"] = as.numeric(difftime(end.time, st.time, units = "secs"))
   return(out)
 }

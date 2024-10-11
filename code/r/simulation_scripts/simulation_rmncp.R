@@ -92,7 +92,7 @@ for(m in 1:reps_){
     dval <- c(dval, max(out_$Dval))
     runtime <- c(runtime, out_$runtime)
   }
-  print(paste("Detection is finished in", runtime[m], out_$runtime_units[m]))
+  print(paste("Detection is finished in", runtime[m], "seconds"))
   print(paste("Change Point is detected at", ch_pt[m], "with Dval", 
               dval[m]))
 }
