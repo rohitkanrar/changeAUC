@@ -25,5 +25,5 @@ def changeforest_wrapper(sample, tau=0.5):
     }
     return out_dict
 
-sample = get_dense_shift_normal_mean(delta=2, n=1000, p=100, prop=0.5)
-print(changeforest_wrapper(sample=sample))
+# sample = get_dense_shift_normal_mean(delta=2, n=1000, p=100, prop=0.5)
+# print(changeforest_wrapper(sample=sample))

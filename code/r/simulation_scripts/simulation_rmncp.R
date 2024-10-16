@@ -83,13 +83,13 @@ for(m in 1:reps_){
   if(m == 1){
     ch_pt <- out_$S[1]
     ari <- get_ari(n_, floor(n_ * 0.5), ch_pt)
-    dval <- out_$Dval
+    dval <- out_$Dval[1]
     runtime <- out_$runtime
   }
   else{
     ch_pt <- c(ch_pt, out_$S[1])
     ari <- c(ari, get_ari(n_, floor(n_ * 0.5), ch_pt[m]))
-    dval <- c(dval, max(out_$Dval))
+    dval <- c(dval, out_$Dval[1])
     runtime <- c(runtime, out_$runtime)
   }
   print(paste("Detection is finished in", runtime[m], "seconds"))
@@ -105,4 +105,5 @@ file.name <- paste("delta", delta_, "p", p_, "n", n_, "rep", reps_,
                    "seed", seed_[1], ".RData", sep = "_")
 
 path.name <- paste(out_dir, file.name, sep = "")
+print(path.name)
 saveRDS(out_list, file = path.name)
