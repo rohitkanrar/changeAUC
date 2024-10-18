@@ -266,11 +266,11 @@ bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
   labs(fill = "Methods") +
   scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
                               "gseg_maxt", "gseg_gen",
-                              "Hddc", "Logis", "changeforest", "Fnn", "Rf")) +
+                              "Hddc", "changeforest", "Logis", "Fnn", "Rf")) +
   scale_fill_manual(values = color.choice,
                     breaks = c("gseg_orig", "gseg_wei", 
                                "gseg_maxt", "gseg_gen",
-                               "Hddc", "Logis", "changeforest", "Fnn", "Rf")) +
+                               "Hddc", "changeforest", "Logis", "Fnn", "Rf")) +
   theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
         legend.position = "top", legend.title = element_text(size = 12),
         legend.text = element_text(size = 12),

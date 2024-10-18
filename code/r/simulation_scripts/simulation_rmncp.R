@@ -30,7 +30,7 @@ loc_ <- opt$location
 seed_ <- seq(opt$seed, length.out = reps_) 
 
 if(loc_ =='hku'){
-  out_dir <- "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/"
+  out_dir <- "/scr/u/rohitisu/git_repos_data/changeAUC/output/"
 } else if(loc_ == 'pronto'){
   out_dir <- "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output/"
 } else{
