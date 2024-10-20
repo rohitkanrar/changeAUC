@@ -22,7 +22,7 @@ args = parser.parse_args()
 seed_ = np.arange(args.seed, args.seed + args.reps)
 
 if args.location == 'hku':
-    out_dir = "/lustre1/u/rohitisu/git_repos_data/changeAUC/output/"
+    out_dir = "/scr/u/rohitisu/git_repos_data/changeAUC/output/"
 elif args.location == "pronto":
     out_dir = "/work/LAS/zhanruic-lab/rohitk/git_repos_data/changeAUC/output/"
 else:
