@@ -25,3 +25,4 @@ output/sparse_diag_cov/
 output/sparse_mean/
 output/sparse_moment/
 output/standard_null/
+output/null_quantiles_cusum
