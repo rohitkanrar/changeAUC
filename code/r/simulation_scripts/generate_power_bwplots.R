@@ -7,7 +7,7 @@ source("code/r/get_null_quantiles/combine.R")
 
 p <- c(500, 1000)
 n <- 1000
-n_methods <- 9
+n_methods <- 10
 reps_total <- 500
 dgp <- c("dense_mean", "sparse_mean", "dense_cov", "sparse_cov",
             "dense_diag_cov", "sparse_diag_cov", "dense_moment", "sparse_moment")
@@ -82,7 +82,6 @@ for(regime in dgp){
     j <- j + 1
   }
   
-  
   # fnn
   library(reticulate)
   # py_install("pandas")
@@ -109,10 +108,24 @@ for(regime in dgp){
     j <- j + 1
   }
   
+  # NODE
+  library(reticulate)
+  # py_install("pandas")
+  pd <- import("pandas")
+  j <- 1
+  for(p_ in p){
+    file_path <- paste("output/", regime, "/node/",
+                       "delta_", delta[k], "_p_", p_, "_n_", n, 
+                       "_seed_1_.pkl", sep = "")
+    out <- pd$read_pickle(file_path)
+    ari_bw[[j]][, 10] <- out$ari
+    j <- j + 1
+  }
+  
   test_df <- data.frame(ARI = as.vector(ari_bw[[1]]),
                         method = rep(c("Logis", "Hddc", "gseg_orig",
                                        "gseg_wei", "gseg_maxt", "gseg_gen",
-                                       "changeforest", "Fnn", "Rf"), 
+                                       "changeforest", "Fnn", "Rf", "NODE"), 
                                      each = reps_total),
                         dgp = rep(paste(DGP[k], "(p = 500)"), 
                                   reps_total * n_methods))
@@ -120,7 +133,7 @@ for(regime in dgp){
                    data.frame(ARI = as.vector(ari_bw[[2]]),
                               method = rep(c("Logis", "Hddc", "gseg_orig",
                                              "gseg_wei", "gseg_maxt", "gseg_gen",
-                                             "changeforest", "Fnn", "Rf"), 
+                                             "changeforest", "Fnn", "Rf", "NODE"), 
                                            each = reps_total),
                               dgp = rep(paste(DGP[k], "(p = 1000)"), 
                                         reps_total * n_methods)))
@@ -247,9 +260,9 @@ for(regime in dgp){
 #        width = 6.75, height = 6.5, units = "in")
 
 
-color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00",
+color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00", NODE = "#9999CC",
                   gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
-                  gseg_maxt = "#56B4E9", gseg_gen = "#009E73",
+                  gseg_maxt = "#56B4E9", gseg_gen = "#009E73", 
                   changeforest = "#F0E442", Fnn = "#C77CFF", Rf = "#7CAE00")
 bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
   geom_boxplot(aes(fill=method)) +
@@ -266,11 +279,13 @@ bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
   labs(fill = "Methods") +
   scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
                               "gseg_maxt", "gseg_gen",
-                              "Hddc", "changeforest", "Logis", "Fnn", "Rf")) +
+                              "Hddc", "NODE", "changeforest", 
+                              "Logis", "Fnn", "Rf")) +
   scale_fill_manual(values = color.choice,
                     breaks = c("gseg_orig", "gseg_wei", 
                                "gseg_maxt", "gseg_gen",
-                               "Hddc", "changeforest", "Logis", "Fnn", "Rf")) +
+                               "Hddc", "NODE", "changeforest", 
+                               "Logis", "Fnn", "Rf")) +
   theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
         legend.position = "top", legend.title = element_text(size = 12),
         legend.text = element_text(size = 12),

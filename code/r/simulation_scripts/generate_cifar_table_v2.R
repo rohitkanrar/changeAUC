@@ -3,6 +3,7 @@ epsilon <- 0.15
 eta <- 0.05
 source("code/r/get_null_quantiles/combine.R")
 c95 <- q95/sqrt(1000) + 0.5
+c95_cusum <- q95_cusum
 dgp <- c("3-5", "4-5", "4-7", "4-4", "5-5")
 method_ <- c("gseg", "vgg16", "vgg19")
 final_cifar_table <- matrix(0, length(dgp), 4+2+2)
@@ -75,20 +76,24 @@ for(dgp_ in dgp){
         final_cifar_table[i, j+2] <- mean(ari_cusum)
       } else{
         size <- numeric(0)
+        size_cusum <- numeric(0)
+        max_auc <- numeric(0)
+        max_cusum <- numeric(0)
         for(file_ in list.files(file_dir)){
           file__ <- paste(file_dir, file_, sep = "")
           out <- pd$read_pickle(file__)
-          if(i <= 3){
-            ari <- c(ari, ifelse(out$max_auc >= c95, out$ari, 0))
-          } else{
-            size <- c(size, ifelse(out$max_auc >= c95, 1, 0))
-          }
+          max_auc <- c(max_auc, out$max_auc)
+          size <- c(size, ifelse(out$max_auc >= c95, 1, 0))
+          cusum <- get_cusum_stat(out$pred, n = 1000)$cusum_stat
+          max_cusum <- c(max_cusum, max(cusum))
+          size_cusum <- c(size_cusum, ifelse(max(cusum) >= c95_cusum, 1, 0))
         }
         
         final_cifar_table[i, j] <- mean(size)
+        final_cifar_table[i, j+2] <- mean(size_cusum)
       }
     }
   }
 }
-
+# saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
 xtable::xtable(final_cifar_table, digits = 4)
