@@ -7,7 +7,7 @@ source("code/r/get_null_quantiles/combine.R")
 
 p <- c(500, 1000)
 n <- 1000
-n_methods <- 10
+n_methods <- 8
 reps_total <- 500
 dgp <- c("dense_mean", "sparse_mean", "dense_cov", "sparse_cov",
             "dense_diag_cov", "sparse_diag_cov", "dense_moment", "sparse_moment")
@@ -61,10 +61,10 @@ for(regime in dgp){
                        "delta_", delta[k], "_p_", p_, "_n_", n, 
                        "_rep_500_seed_1_.RData", sep = "")
     out <- readRDS(file_path)
-    ari_bw[[j]][, 3] <- out$orig$ari * as.numeric(out$orig$pval <= 0.05)
-    ari_bw[[j]][, 4] <- out$wei$ari * as.numeric(out$wei$pval <= 0.05)
-    ari_bw[[j]][, 5] <- out$maxt$ari * as.numeric(out$maxt$pval <= 0.05)
-    ari_bw[[j]][, 6] <- out$gen$ari * as.numeric(out$gen$pval <= 0.05)
+    # ari_bw[[j]][, 3] <- out$orig$ari * as.numeric(out$orig$pval <= 0.05)
+    ari_bw[[j]][, 3] <- out$wei$ari * as.numeric(out$wei$pval <= 0.05)
+    ari_bw[[j]][, 4] <- out$maxt$ari * as.numeric(out$maxt$pval <= 0.05)
+    # ari_bw[[j]][, 6] <- out$gen$ari * as.numeric(out$gen$pval <= 0.05)
     j <- j + 1
   }
   
@@ -78,7 +78,7 @@ for(regime in dgp){
                        "delta_", delta[k], "_p_", p_, "_n_", n, 
                        "_seed_1_.pkl", sep = "")
     out <- pd$read_pickle(file_path)
-    ari_bw[[j]][, 7] <- out$ari
+    ari_bw[[j]][, 5] <- out$ari
     j <- j + 1
   }
   
@@ -92,7 +92,7 @@ for(regime in dgp){
                        "delta_", delta[k], "_p_", p_, "_n_", n, 
                        "_ep_0.15_et_0.05_seed_1_.pkl", sep = "")
     out <- pd$read_pickle(file_path)
-    ari_bw[[j]][, 8] <- out$ari * as.numeric(sqrt(n) * (out$max_aucs - 0.5) > q95)
+    ari_bw[[j]][, 6] <- out$ari * as.numeric(sqrt(n) * (out$max_aucs - 0.5) > q95)
     j <- j + 1
   }
   
@@ -104,7 +104,7 @@ for(regime in dgp){
                        "delta_", delta[k], "_p_", p_, "_n_", n, 
                        "_ep_0.15_et_0.05_seed_1_.RData", sep = "")
     out <- readRDS(file_path)
-    ari_bw[[j]][, 9] <- out$ari * as.numeric(sqrt(n) * (out$max_aucs - 0.5) > q95)
+    ari_bw[[j]][, 7] <- out$ari * as.numeric(sqrt(n) * (out$max_aucs - 0.5) > q95)
     j <- j + 1
   }
   
@@ -118,22 +118,21 @@ for(regime in dgp){
                        "delta_", delta[k], "_p_", p_, "_n_", n, 
                        "_seed_1_.pkl", sep = "")
     out <- pd$read_pickle(file_path)
-    ari_bw[[j]][, 10] <- out$ari
+    ari_bw[[j]][, 8] <- out$ari
     j <- j + 1
   }
   
   test_df <- data.frame(ARI = as.vector(ari_bw[[1]]),
-                        method = rep(c("Logis", "Hddc", "gseg_orig",
-                                       "gseg_wei", "gseg_maxt", "gseg_gen",
+                        method = rep(c("Logis", "Hddc", "gseg_wei", "gseg_maxt",
                                        "changeforest", "Fnn", "Rf", "NODE"), 
                                      each = reps_total),
                         dgp = rep(paste(DGP[k], "(p = 500)"), 
                                   reps_total * n_methods))
   test_df <- rbind(test_df,
                    data.frame(ARI = as.vector(ari_bw[[2]]),
-                              method = rep(c("Logis", "Hddc", "gseg_orig",
-                                             "gseg_wei", "gseg_maxt", "gseg_gen",
-                                             "changeforest", "Fnn", "Rf", "NODE"), 
+                              method = rep(c("Logis", "Hddc", "gseg_wei", 
+                                             "gseg_maxt", "changeforest", 
+                                             "Fnn", "Rf", "NODE"), 
                                            each = reps_total),
                               dgp = rep(paste(DGP[k], "(p = 1000)"), 
                                         reps_total * n_methods)))
@@ -277,15 +276,11 @@ bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
                                  "Sparse Distribution (p = 1000)")
   ), ncol = 4) +
   labs(fill = "Methods") +
-  scale_x_discrete(limits = c("gseg_orig", "gseg_wei", 
-                              "gseg_maxt", "gseg_gen",
-                              "Hddc", "NODE", "changeforest", 
-                              "Logis", "Fnn", "Rf")) +
+  scale_x_discrete(limits = c("gseg_wei", "gseg_maxt","Hddc", "NODE", 
+                              "changeforest", "Logis", "Fnn", "Rf")) +
   scale_fill_manual(values = color.choice,
-                    breaks = c("gseg_orig", "gseg_wei", 
-                               "gseg_maxt", "gseg_gen",
-                               "Hddc", "NODE", "changeforest", 
-                               "Logis", "Fnn", "Rf")) +
+                    breaks = c("gseg_wei", "gseg_maxt","Hddc", "NODE", 
+                               "changeforest", "Logis", "Fnn", "Rf")) +
   theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
         legend.position = "top", legend.title = element_text(size = 12),
         legend.text = element_text(size = 12),
