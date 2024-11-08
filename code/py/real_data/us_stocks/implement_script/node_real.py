@@ -2,6 +2,7 @@ import sys, random
 import pandas as pd
 import pickle as pkl
 import numpy as np
+from datetime import datetime
 import os
 sys.path.insert(0, "./code/py")
 if os.getenv("SLURM_SUBMIT_HOST") == "pronto.las.iastate.edu":
@@ -18,9 +19,10 @@ else:
     sys.path.insert(0, "./data")
 from other_methods.node.node_multiple import get_multiple_change_point
 
-
+date_parser = lambda x: datetime.strptime(x, "%Y-%m-%d")
 dat = pd.read_csv("data/us_stocks/stable_stocks.csv",
-                  dtype=float, index_col=0, parse_dates=True)
+                  dtype=float, index_col=0, parse_dates=True,
+                  date_parser=date_parser)
 
 random.seed(100)
 stock_multiple = get_multiple_change_point(sample=dat.values, no_of_perm=199, min_length=500, decay=np.sqrt(2),
