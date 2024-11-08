@@ -6,10 +6,10 @@ sys.path.insert(0, "./code/py")
 from misc.misc_v1 import get_ari
 from generate_data.mean_shift import get_dense_shift_normal_mean
 
-def changeforest_wrapper(sample, tau=0.5):
+def changeforest_wrapper(sample, tau=0.5, segment_method='bs'):
     n = sample.shape[0]
     st_time = time()
-    out = changeforest(sample, "random_forest", "bs")
+    out = changeforest(sample, "random_forest", segment_method)
     en_time = time() - st_time
     print("Detection is finished in %s seconds" % en_time)
     cp = out.best_split

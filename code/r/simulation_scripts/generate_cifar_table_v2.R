@@ -97,3 +97,41 @@ for(dgp_ in dgp){
 }
 # saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
 xtable::xtable(final_cifar_table, digits = 4)
+
+if(FALSE){
+  cifar_cusum_size <- matrix(0, 2, 4)
+  
+  out <- pd$read_pickle("output/cifar/4-4/vgg16/cifar_4-4_n_2000_rep_500.pkl")
+  max_cusums <- sapply(1:500, function(i){
+    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+    max(cusum)
+  })
+  cifar_cusum_size[1, 3] <- mean(max_cusums > c95_cusum)
+  
+  out <- pd$read_pickle("output/cifar/5-5/vgg16/cifar_5-5_n_2000_rep_500.pkl")
+  max_cusums <- sapply(1:500, function(i){
+    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+    max(cusum)
+  })
+  cifar_cusum_size[2, 3] <- mean(max_cusums > c95_cusum)
+  
+  out <- pd$read_pickle("output/cifar/4-4/vgg19/cifar_4-4_n_2000_rep_500.pkl")
+  max_cusums <- sapply(1:500, function(i){
+    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+    max(cusum)
+  })
+  cifar_cusum_size[1, 4] <- mean(max_cusums > c95_cusum)
+  
+  out <- pd$read_pickle("output/cifar/5-5/vgg19/cifar_5-5_n_2000_rep_500.pkl")
+  max_cusums <- sapply(1:500, function(i){
+    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+    max(cusum)
+  })
+  cifar_cusum_size[2, 4] <- mean(max_cusums > c95_cusum)
+  
+  cifar_cusum_size[1, 1] <- final_cifar_table[4, 7]
+  cifar_cusum_size[1, 2] <- final_cifar_table[4, 8]
+  cifar_cusum_size[2, 1] <- final_cifar_table[5, 7]
+  cifar_cusum_size[2, 2] <- final_cifar_table[5, 8]
+  saveRDS(cifar_cusum_size, "output/cifar/cifar_cusum_size.RData")
+}
