@@ -2,7 +2,8 @@ import pickle as pkl
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colors
-import sys
+import sys, os
+from datetime import datetime
 
 sys.path.insert(0, "./output")
 sys.path.insert(0, "./data")
@@ -51,3 +52,10 @@ def generate_daily_heatmaps_from_df(df, map, save_dir, plot_axis=False, plot_leg
                               bbox_inches='tight', pad_inches=0)
 
         plt.close()
+
+
+def get_dates(dir_path):
+    files = [f for f in os.listdir(dir_path) if f.endswith(".jpg")]
+    files_sorted = sorted(files, key=lambda x: datetime.strptime(x[:8], "%y-%m-%d"))
+
+    return files_sorted

@@ -19,7 +19,8 @@ else:
     sys.path.insert(0, "./data")
 from other_methods.node.node_multiple import get_multiple_change_point
 
-dat = pd.read_csv("data/us_stocks/stable_stocks_no_dates.csv")
+dat = pd.read_csv("data/us_stocks/stable_stocks.csv",
+                  dtype=float, index_col=0, parse_dates=True)
 
 random.seed(100)
 stock_multiple = get_multiple_change_point(sample=dat.values, no_of_perm=199, min_length=500, decay=np.sqrt(2),
@@ -28,3 +29,7 @@ stock_multiple = get_multiple_change_point(sample=dat.values, no_of_perm=199, mi
 out_dir = 'output/real_data/us_stocks/'
 with open(out_dir + 'node_sbs_us_stocks.pkl', "wb") as fp:
     pkl.dump(stock_multiple, fp)
+
+
+# print(stock_multiple[1][0])
+# for the seeded interval [221, 1289] the cp is 1152 and the max_seeded_max_gain is less than perm_cutoff. So no cp is detected.

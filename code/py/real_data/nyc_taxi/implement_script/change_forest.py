@@ -16,7 +16,8 @@ else:
     root_dir = ""
     sys.path.insert(0, "./output")
     sys.path.insert(0, "./data")
-from other_methods.changeforest.change_forest import changeforest_wrapper
+from changeforest import changeforest, Control
+from misc.misc_heatmaps import get_dates
 
 out_dir = root_dir + "output/real_data/nyc_taxi/"
 
@@ -28,9 +29,15 @@ random.seed(100)
 
 
 
-detect_global_multiple = changeforest_wrapper(sample=heatmaps_array_vec, 
-                                              tau=0.5, segment_method='sbs')
+cf_taxi_multiple = changeforest(heatmaps_array_vec, "random_forest", "sbs",
+                              Control(minimal_relative_segment_length=0.15))
+
+dates = get_dates("data/fhv_nyc/daily_heatmaps")
+cps_index = cf_taxi_multiple.split_points()
+detected_cps = [dates[i] for i in cps_index]
+print(detected_cps)
+# dates = dat.index[]
 
 with open(out_dir + "changeforest_sbs_nyc_taxi.pkl", "wb") as fp:
-    pkl.dump(detect_global_multiple, fp)
+    pkl.dump(detected_cps, fp)
 

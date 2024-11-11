@@ -15,15 +15,20 @@ else:
     root_dir = ""
     sys.path.insert(0, "./output")
     sys.path.insert(0, "./data")
-from other_methods.changeforest.change_forest import changeforest_wrapper
+from changeforest import changeforest, Control
 
 
 dat = pd.read_csv("data/us_stocks/stable_stocks.csv",
                   dtype=float, index_col=0, parse_dates=True)
 
 random.seed(100)
-stock_multiple = changeforest_wrapper(sample=dat.values, tau=0.5, segment_method='sbs')
+stock_multiple = changeforest(dat.values, "random_forest", "sbs",
+                              Control(minimal_relative_segment_length=0.15))
+
+dates = dat.index[stock_multiple.split_points()]
 
 out_dir = 'output/real_data/us_stocks/'
 with open(out_dir + 'changeforest_sbs_us_stocks.pkl', "wb") as fp:
-    pkl.dump(stock_multiple, fp)
+    pkl.dump(dates, fp)
+
+print(stock_multiple)
