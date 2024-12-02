@@ -46,7 +46,7 @@ for(dgp_ in dgp){
         cusum <- get_cusum_stat(out$pred[r, ], n = n_, auc_trim = eta)$cusum_stat
         max(cusum)
       })
-      size_all_cusum[i, j] <- mean(max_cusums >= c95_cusum)
+      size_all_cusum[i, j] <- mean(max_cusums >= c95_cusum, na.rm = TRUE)
     }
   }
   rownames(size_all) <- rownames_
@@ -68,5 +68,6 @@ combined_table <- matrix(
         "% (", formatC(100 * size_all_cusum_dgp, format = "f", digits = 1), "%)", sep = ""),
   nrow = nrow(size_all_dgp), ncol = ncol(size_all_cusum_dgp)
 )
+rownames(combined_table) <- rownames(size_all_dgp)
 
 xtable::xtable(combined_table)

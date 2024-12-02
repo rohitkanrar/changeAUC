@@ -123,7 +123,7 @@ for(regime in dgp){
   }
   
   test_df <- data.frame(ARI = as.vector(ari_bw[[1]]),
-                        method = rep(c("Logis", "Hddc", "gseg_wei", "gseg_maxt",
+                        method = rep(c("Logis", "Hddc", "gseg_wei", "gseg_max",
                                        "changeforest", "Fnn", "Rf", "NODE"), 
                                      each = reps_total),
                         dgp = rep(paste(DGP[k], "(p = 500)"), 
@@ -131,7 +131,7 @@ for(regime in dgp){
   test_df <- rbind(test_df,
                    data.frame(ARI = as.vector(ari_bw[[2]]),
                               method = rep(c("Logis", "Hddc", "gseg_wei", 
-                                             "gseg_maxt", "changeforest", 
+                                             "gseg_max", "changeforest", 
                                              "Fnn", "Rf", "NODE"), 
                                            each = reps_total),
                               dgp = rep(paste(DGP[k], "(p = 1000)"), 
@@ -261,7 +261,7 @@ for(regime in dgp){
 
 color.choice <- c(Logis = "#0072B2", Hddc = "#D55E00", NODE = "#9999CC",
                   gseg_orig =  "#CC79A7", gseg_wei = "#E69F00",
-                  gseg_maxt = "#56B4E9", gseg_gen = "#009E73", 
+                  gseg_max = "#56B4E9", gseg_gen = "#009E73", 
                   changeforest = "#F0E442", Fnn = "#C77CFF", Rf = "#7CAE00")
 bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
   geom_boxplot(aes(fill=method)) +
@@ -276,10 +276,10 @@ bw_ari <- ggplot(big_df, aes(x = method, y = ARI, group = method)) +
                                  "Sparse Distribution (p = 1000)")
   ), ncol = 4) +
   labs(fill = "Methods") +
-  scale_x_discrete(limits = c("gseg_wei", "gseg_maxt","Hddc", "NODE", 
+  scale_x_discrete(limits = c("gseg_wei", "gseg_max","Hddc", "NODE", 
                               "changeforest", "Logis", "Fnn", "Rf")) +
   scale_fill_manual(values = color.choice,
-                    breaks = c("gseg_wei", "gseg_maxt","Hddc", "NODE", 
+                    breaks = c("gseg_wei", "gseg_max","Hddc", "NODE", 
                                "changeforest", "Logis", "Fnn", "Rf")) +
   theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
         legend.position = "top", legend.title = element_text(size = 12),
