@@ -66,7 +66,10 @@ for i in np.arange(repl_):
         i2 = i12[int(n/2):]
 
     x = x_train[i1 + i2, :, :]
-    x_vec = x.reshape(x.shape[0], -1)
+    # x_vec = x.reshape(x.shape[0], -1)
+    x_vec = np.array([
+        sample.flatten(order='F') for sample in x
+        ])
     output = changeforest_wrapper(x_vec, tau=0.5)
     ch_pt[i] = output['cp']
     ari[i] = output['ari']
