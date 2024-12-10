@@ -11,6 +11,7 @@ data/fhv_nyc/daily_heatmaps/
 data/fhv_nyc/daily_heatmaps_with_legend/
 data/fhv_nyc/heatmaps_numeric.pkl
 data/fhv_nyc/heatmaps_vectorized.RData
+data/monkey_data
 output/
 output/banded_null/
 output/cifar/
