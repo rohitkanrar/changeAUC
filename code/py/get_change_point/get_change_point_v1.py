@@ -19,17 +19,17 @@ def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
     if classifier.upper() == "FNN":
         model = get_fnn_model(p)
     elif classifier.upper() == "VGG16":
-        model = get_vgg16_model()
+        model = get_vgg16_model(shape=p)
     elif classifier.upper() == "VGG19":
-        model = get_vgg19_model()
+        model = get_vgg19_model(shape=p)
     elif classifier.upper() == "VGG16_BW":
-        model = get_vgg16_model(bw=True)
+        model = get_vgg16_model(shape=p)
     else:
         pass
     model.fit(x_train, y_train, epochs=32, batch_size=32, verbose=0)
     pred = model.predict(x_test)[:, 0]
 
-    return pred, model
+    return pred
 
 
 def get_change_point(sample, classifier="FNN",
@@ -39,9 +39,9 @@ def get_change_point(sample, classifier="FNN",
                      no_of_perm=199,
                      tau=0.5, require_cusum=False):
     st_time = time()
-    if classifier.upper() in ["CNN", "VGG16", "VGG19", "VGG16_BW"]:
+    if len(sample.shape) > 2:
         n = sample.shape[0]
-        p = sample.shape[1:2]
+        p = sample.shape[1:]
     else:
         n, p = sample.shape
     k = int(np.floor(n * split_trim))
@@ -50,7 +50,7 @@ def get_change_point(sample, classifier="FNN",
     start_ = int(np.floor(auc_trim * n))
     end_ = nte - int(np.floor(auc_trim * n))
     auc_ = np.zeros(nte - 2 * start_)
-    pred, model = get_trained_clf(sample, n, p, classifier, split_trim)
+    pred = get_trained_clf(sample, n, p, classifier, split_trim)
 
     for i, j in enumerate(np.arange(start_, end_)):
         y_test_ = np.concatenate((np.zeros(j), np.ones(nte - j)), axis=0)

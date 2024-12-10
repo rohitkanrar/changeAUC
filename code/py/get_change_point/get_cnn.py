@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model, Sequential
 callback = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True)
 
 
-def get_vgg16_model(bw=False):
+def get_vgg16_model(shape=(32, 32, 3), pre_trained='imagenet'):
     """
     Input:
     - p: dimension of input sample; int
@@ -21,29 +21,24 @@ def get_vgg16_model(bw=False):
     This is a basic wrapper which returns model.compile object created using tensorflow.
 
     """
-    if bw:
-        shape = (32, 32, 1)
-    else:
-        shape = (32, 32, 3)
-    model = VGG16(include_top=False, input_shape=shape)
+    model_vgg16 = VGG16(weights=pre_trained, include_top=False, input_shape=shape)
     # mark loaded layers as not trainable
-    for layer in model.layers:
+    for layer in model_vgg16.layers:
         layer.trainable = False
     # add new classifier layers
-    flat1 = Flatten()(model.layers[-1].output)
-    class1 = Dense(128, activation='relu', kernel_initializer='he_uniform')(flat1)
-    output = Dense(1, activation='sigmoid')(class1)
-    # define new model
-    model = Model(inputs=model.inputs, outputs=output)
-
+    model = Sequential()
+    model.add(model_vgg16)
+    model.add(Flatten(name='flatten'))
+    model.add(Dense(units=128, activation='relu', kernel_initializer='he_uniform', name='dense'))
+    model.add(Dense(units=1, activation='sigmoid', name='output'))
     # Change from SGD to Adam since the latter trains faster with adaptive learning rate.
     my_optimizer = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
-    model.compile(optimizer=my_optimizer, loss='binary_crossentropy', metrics=[tf.keras.metrics.AUC()])
-    # model.compile(optimizer="adam", loss='binary_crossentropy', metrics=[tf.keras.metrics.AUC()])
+    model.compile(optimizer=my_optimizer, loss='binary_crossentropy')
+    # model.compile(optimizer="adam", loss='binary_crossentropy')
     return model
 
 
-def get_vgg19_model(bw=False):
+def get_vgg19_model(shape=(32, 32, 3), pre_trained='imagenet'):
     """
     Input:
     - p: dimension of input sample; int
@@ -57,23 +52,18 @@ def get_vgg19_model(bw=False):
     This is a basic wrapper which returns model.compile object created using tensorflow.
 
     """
-    if bw:
-        shape = (32, 32, 1)
-    else:
-        shape = (32, 32, 3)
-    model = VGG19(include_top=False, input_shape=shape)
+    model_vgg19 = VGG19(weights=pre_trained, include_top=False, input_shape=shape)
     # mark loaded layers as not trainable
-    for layer in model.layers:
+    for layer in model_vgg19.layers:
         layer.trainable = False
     # add new classifier layers
-    flat1 = Flatten()(model.layers[-1].output)
-    class1 = Dense(128, activation='relu', kernel_initializer='he_uniform')(flat1)
-    output = Dense(1, activation='sigmoid')(class1)
-    # define new model
-    model = Model(inputs=model.inputs, outputs=output)
+    model = Sequential()
+    model.add(model_vgg19)
+    model.add(Flatten(name='flatten'))
+    model.add(Dense(units=128, activation='relu', kernel_initializer='he_uniform', name='dense'))
+    model.add(Dense(units=1, activation='sigmoid', name='output'))
 
     # Change from SGD to Adam since the latter trains faster with adaptive learning rate.
     my_optimizer = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
-    model.compile(optimizer=my_optimizer, loss='binary_crossentropy', metrics=[tf.keras.metrics.AUC()])
-    # model.compile(optimizer="adam", loss='binary_crossentropy', metrics=[tf.keras.metrics.AUC()])
+    model.compile(optimizer=my_optimizer, loss='binary_crossentropy')
     return model

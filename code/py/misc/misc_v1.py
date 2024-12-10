@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics.cluster import adjusted_rand_score as ari
-import sys
+import sys, os
 
 sys.path.insert(0, "./output")
 sys.path.insert(0, "./data")
