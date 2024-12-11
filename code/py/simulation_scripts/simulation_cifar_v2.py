@@ -7,13 +7,14 @@ from datetime import datetime
 sys.path.insert(0, "./code/py")
 from get_change_point.get_change_point_v1 import get_change_point
 
-# RUN: python code/py/simulation_scripts/simulation_cifar_v2.py -r 10 -n 1000 -g 35 -c VGG16 -l local -t True -s 1
+# RUN: python code/py/simulation_scripts/simulation_cifar_v2.py -r 10 -n 1000 -g 35 -c VGG16 -l local -t True -s 1 -d 128
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--reps", type=int)
 parser.add_argument("-n", "--n", type=int)
 parser.add_argument("-g", "--dgp", type=int, default=35)
 parser.add_argument("-c", "--clf", default="VGG16")
+parser.add_argument("-d", "--ndenselayers", type=int, default=128)
 parser.add_argument("-l", "--location", default="hku")
 parser.add_argument("-t", "--test", default=False)
 parser.add_argument("-s", "--seed", type=int, default=int(np.round(np.random.random() * 1e7)))
@@ -73,7 +74,8 @@ for i in np.arange(repl_):
                               auc_trim=0.05,
                               perm_pval=args.test,
                               no_of_perm=199,
-                              tau=0.5, require_cusum=require_cusum
+                              tau=0.5, require_cusum=require_cusum, 
+                              n_layers_dense=args.ndenselayers
                               )
     if i==0:
         pred_ = output['pred']
@@ -113,7 +115,7 @@ out_dict = {
     "aucs": aucs, "ch_pt": ch_pt, "ari": ari, "max_aucs": max_aucs, "pred": pred,
     "dgp": args.dgp, "reps": args.reps, "n": args.n,
     "clf": args.clf.lower(), "split_trim": 0.15, "auc_trim": 0.05, "perm_pval": args.test,
-    "location": args.location, "seed": args.seed, "runtime": runtime
+    "location": args.location, "seed": args.seed, "runtime": runtime, "n_layers_dense": args.ndenselayers
 }
 if require_cusum:
     out_dict['cusums'] = cusums

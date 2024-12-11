@@ -9,7 +9,7 @@ from misc.misc_v1 import get_ari
 from misc.misc_v1 import get_cusum
 
 
-def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
+def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15, n_layers_dense=128):
     k = int(np.floor(n * split_trim))
     tr_ind = np.concatenate((np.arange(k), np.arange((n - k), n)), axis=0)
     x_train = sample_[tr_ind]
@@ -19,11 +19,11 @@ def get_trained_clf(sample_, n, p, classifier="FNN", split_trim=0.15):
     if classifier.upper() == "FNN":
         model = get_fnn_model(p)
     elif classifier.upper() == "VGG16":
-        model = get_vgg16_model(shape=p)
+        model = get_vgg16_model(shape=p, n_layers_dense=n_layers_dense)
     elif classifier.upper() == "VGG19":
-        model = get_vgg19_model(shape=p)
+        model = get_vgg19_model(shape=p, n_layers_dense=n_layers_dense)
     elif classifier.upper() == "VGG16_BW":
-        model = get_vgg16_model(shape=p)
+        model = get_vgg16_model(shape=p, n_layers_dense=n_layers_dense)
     else:
         pass
     model.fit(x_train, y_train, epochs=32, batch_size=32, verbose=0)
@@ -37,7 +37,8 @@ def get_change_point(sample, classifier="FNN",
                      auc_trim=0.05,
                      perm_pval=False,
                      no_of_perm=199,
-                     tau=0.5, require_cusum=False):
+                     tau=0.5, require_cusum=False, 
+                     n_layers_dense=128):
     st_time = time()
     if len(sample.shape) > 2:
         n = sample.shape[0]
@@ -50,7 +51,7 @@ def get_change_point(sample, classifier="FNN",
     start_ = int(np.floor(auc_trim * n))
     end_ = nte - int(np.floor(auc_trim * n))
     auc_ = np.zeros(nte - 2 * start_)
-    pred = get_trained_clf(sample, n, p, classifier, split_trim)
+    pred = get_trained_clf(sample, n, p, classifier, split_trim, n_layers_dense=n_layers_dense)
 
     for i, j in enumerate(np.arange(start_, end_)):
         y_test_ = np.concatenate((np.zeros(j), np.ones(nte - j)), axis=0)

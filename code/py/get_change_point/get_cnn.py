@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model, Sequential
 callback = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True)
 
 
-def get_vgg16_model(shape=(32, 32, 3), pre_trained='imagenet'):
+def get_vgg16_model(shape=(32, 32, 3), pre_trained='imagenet', n_layers_dense=128):
     """
     Input:
     - p: dimension of input sample; int
@@ -29,7 +29,7 @@ def get_vgg16_model(shape=(32, 32, 3), pre_trained='imagenet'):
     model = Sequential()
     model.add(model_vgg16)
     model.add(Flatten(name='flatten'))
-    model.add(Dense(units=128, activation='relu', kernel_initializer='he_uniform', name='dense'))
+    model.add(Dense(units=n_layers_dense, activation='relu', kernel_initializer='he_uniform', name='dense'))
     model.add(Dense(units=1, activation='sigmoid', name='output'))
     # Change from SGD to Adam since the latter trains faster with adaptive learning rate.
     my_optimizer = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
@@ -38,7 +38,7 @@ def get_vgg16_model(shape=(32, 32, 3), pre_trained='imagenet'):
     return model
 
 
-def get_vgg19_model(shape=(32, 32, 3), pre_trained='imagenet'):
+def get_vgg19_model(shape=(32, 32, 3), pre_trained='imagenet', n_layers_dense=128):
     """
     Input:
     - p: dimension of input sample; int
@@ -60,7 +60,7 @@ def get_vgg19_model(shape=(32, 32, 3), pre_trained='imagenet'):
     model = Sequential()
     model.add(model_vgg19)
     model.add(Flatten(name='flatten'))
-    model.add(Dense(units=128, activation='relu', kernel_initializer='he_uniform', name='dense'))
+    model.add(Dense(units=n_layers_dense, activation='relu', kernel_initializer='he_uniform', name='dense'))
     model.add(Dense(units=1, activation='sigmoid', name='output'))
 
     # Change from SGD to Adam since the latter trains faster with adaptive learning rate.
