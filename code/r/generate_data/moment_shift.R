@@ -24,3 +24,11 @@ get_exponential <- function(n, p){
     s[, j] <- rexp(n)
   s
 }
+
+get_students_t <- function(n, p, df = 2){
+  s <- matrix(0, n, p)
+  for(j in 1:p){
+    s[, j] <- rt(n, df = df, ncp = 0)
+  }
+  s
+}

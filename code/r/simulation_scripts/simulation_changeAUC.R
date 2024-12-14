@@ -83,6 +83,8 @@ for(m in 1:reps_){
     s_ <- get_sparse_normal_cov(n_, p_, rho = delta_)
   } else if(dgp_ == "exp_null"){
     s_ <- get_exponential(n_, p_)
+  } else if(dgp_ == "students_t"){
+    s_ <- get_students_t(n_, p_, df = delta_)
   }
   else{
     stop("Invalid Data Generating Process (DGP).")
