@@ -64,7 +64,7 @@ for m in np.arange(args.reps):
     elif args.dgp.lower() == "exp_null":
         s_ = get_exponential(args.n, args.p)
     elif args.dgp.lower() == "students_t":
-        s_ = get_students_t(args.n, args.p, df=2)
+        s_ = get_students_t(args.n, args.p, df=args.delta)
     else:
         print("Invalid Data Generating Process (DGP).")
         sys.exit(0)
