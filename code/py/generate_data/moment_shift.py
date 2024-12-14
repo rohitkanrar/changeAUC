@@ -38,3 +38,11 @@ def get_exponential(n, p):
         s[:, j] = np.random.exponential(size=n)
 
     return s
+
+def get_students_t(n, p, df=2):
+    s = np.zeros((n, p))
+
+    for i in np.arange(n):
+        s[i, ] = np.random.standard_t(df=df, size=n)
+
+    return s
