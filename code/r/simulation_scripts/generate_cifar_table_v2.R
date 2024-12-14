@@ -5,8 +5,8 @@ source("code/r/get_null_quantiles/combine.R")
 c95 <- q95/sqrt(1000) + 0.5
 c95_cusum <- q95_cusum
 dgp <- c("3-5", "4-5", "4-7", "4-4", "5-5")
-method_ <- c("gseg", "vgg16", "vgg19")
-final_cifar_table <- matrix(0, length(dgp), 4+2+2)
+method_ <- c("gseg", "changeforest", "vgg16", "vgg19")
+final_cifar_table <- matrix(0, length(dgp), 4+1+2+2)
 library(reticulate)
 pd <- import("pandas")
 
@@ -58,8 +58,22 @@ for(dgp_ in dgp){
         final_cifar_table[i, 4] <- mean(pval_gen < 0.05)
       }
       j <- 4
+    } else if(m == "changeforest"){
+      if(i <= 3){
+        file_ <- paste(file_dir, "cifar_", dgp_, "_n_1000_rep_500.pkl", sep = "")
+        out <- pd$read_pickle(file_)
+        ari <- out$ari
+        ari <- ari * ifelse(out$pval < 0.05, 1, 0)
+        final_cifar_table[i, 5] <- mean(ari)
+      } else{
+        file_ <- paste(file_dir, "cifar_", dgp_, "_n_1000_rep_500.pkl", sep = "")
+        out <- pd$read_pickle(file_)
+        final_cifar_table[i, 5] <- mean(out$pval < 0.05)
+      }
+      j <- 5
     } else{
       if(i <= 3){
+        # browser()
         file_ <- paste(file_dir, "cifar_", dgp_, "_n_1000_rep_500.pkl", sep = "")
         out <- pd$read_pickle(file_)
         ari <- out$ari
@@ -70,68 +84,58 @@ for(dgp_ in dgp){
           cp <- ch_pt_cusum[i]
           get_ari(n = out$n, true_ch_pt = floor(out$n / 2), ch_pt = cp)
         })
-        ari_cusum <- ari_cusum * ifelse(out$pval_cusum < 0.05, 1, 0)
+        ari_cusum <- ari_cusum * ifelse(out$max_cusums >= c95_cusum, 1, 0)
         
         final_cifar_table[i, j] <- mean(ari)
         final_cifar_table[i, j+2] <- mean(ari_cusum)
       } else{
-        size <- numeric(0)
-        size_cusum <- numeric(0)
-        max_auc <- numeric(0)
-        max_cusum <- numeric(0)
-        for(file_ in list.files(file_dir)){
-          file__ <- paste(file_dir, file_, sep = "")
-          out <- pd$read_pickle(file__)
-          max_auc <- c(max_auc, out$max_auc)
-          size <- c(size, ifelse(out$max_auc >= c95, 1, 0))
-          cusum <- get_cusum_stat(out$pred, n = 1000)$cusum_stat
-          max_cusum <- c(max_cusum, max(cusum))
-          size_cusum <- c(size_cusum, ifelse(max(cusum) >= c95_cusum, 1, 0))
-        }
-        
-        final_cifar_table[i, j] <- mean(size)
-        final_cifar_table[i, j+2] <- mean(size_cusum)
+        file_ <- paste(file_dir, "cifar_", dgp_, "_n_1000_rep_500.pkl", sep = "")
+        out <- pd$read_pickle(file_)
+        max_auc <- out$max_aucs
+        max_cusum <- out$max_cusums
+        final_cifar_table[i, j] <- mean(max_auc >= c95)
+        final_cifar_table[i, j+2] <- mean(max_cusum >= c95_cusum)
       }
     }
   }
 }
-# saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
+saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
 xtable::xtable(final_cifar_table, digits = 4)
 
-if(FALSE){
-  cifar_cusum_size <- matrix(0, 2, 4)
-  
-  out <- pd$read_pickle("output/cifar/4-4/vgg16/cifar_4-4_n_2000_rep_500.pkl")
-  max_cusums <- sapply(1:500, function(i){
-    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
-    max(cusum)
-  })
-  cifar_cusum_size[1, 3] <- mean(max_cusums > c95_cusum)
-  
-  out <- pd$read_pickle("output/cifar/5-5/vgg16/cifar_5-5_n_2000_rep_500.pkl")
-  max_cusums <- sapply(1:500, function(i){
-    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
-    max(cusum)
-  })
-  cifar_cusum_size[2, 3] <- mean(max_cusums > c95_cusum)
-  
-  out <- pd$read_pickle("output/cifar/4-4/vgg19/cifar_4-4_n_2000_rep_500.pkl")
-  max_cusums <- sapply(1:500, function(i){
-    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
-    max(cusum)
-  })
-  cifar_cusum_size[1, 4] <- mean(max_cusums > c95_cusum)
-  
-  out <- pd$read_pickle("output/cifar/5-5/vgg19/cifar_5-5_n_2000_rep_500.pkl")
-  max_cusums <- sapply(1:500, function(i){
-    cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
-    max(cusum)
-  })
-  cifar_cusum_size[2, 4] <- mean(max_cusums > c95_cusum)
-  
-  cifar_cusum_size[1, 1] <- final_cifar_table[4, 7]
-  cifar_cusum_size[1, 2] <- final_cifar_table[4, 8]
-  cifar_cusum_size[2, 1] <- final_cifar_table[5, 7]
-  cifar_cusum_size[2, 2] <- final_cifar_table[5, 8]
-  saveRDS(cifar_cusum_size, "output/cifar/cifar_cusum_size.RData")
-}
+# if(FALSE){
+#   cifar_cusum_size <- matrix(0, 2, 4)
+#   
+#   out <- pd$read_pickle("output/cifar/4-4/vgg16/cifar_4-4_n_2000_rep_500.pkl")
+#   max_cusums <- sapply(1:500, function(i){
+#     cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+#     max(cusum)
+#   })
+#   cifar_cusum_size[1, 3] <- mean(max_cusums > c95_cusum)
+#   
+#   out <- pd$read_pickle("output/cifar/5-5/vgg16/cifar_5-5_n_2000_rep_500.pkl")
+#   max_cusums <- sapply(1:500, function(i){
+#     cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+#     max(cusum)
+#   })
+#   cifar_cusum_size[2, 3] <- mean(max_cusums > c95_cusum)
+#   
+#   out <- pd$read_pickle("output/cifar/4-4/vgg19/cifar_4-4_n_2000_rep_500.pkl")
+#   max_cusums <- sapply(1:500, function(i){
+#     cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+#     max(cusum)
+#   })
+#   cifar_cusum_size[1, 4] <- mean(max_cusums > c95_cusum)
+#   
+#   out <- pd$read_pickle("output/cifar/5-5/vgg19/cifar_5-5_n_2000_rep_500.pkl")
+#   max_cusums <- sapply(1:500, function(i){
+#     cusum <- get_cusum_stat(out$pred[i, ], n = 2000)$cusum_stat
+#     max(cusum)
+#   })
+#   cifar_cusum_size[2, 4] <- mean(max_cusums > c95_cusum)
+#   
+#   cifar_cusum_size[1, 1] <- final_cifar_table[4, 7]
+#   cifar_cusum_size[1, 2] <- final_cifar_table[4, 8]
+#   cifar_cusum_size[2, 1] <- final_cifar_table[5, 7]
+#   cifar_cusum_size[2, 2] <- final_cifar_table[5, 8]
+#   saveRDS(cifar_cusum_size, "output/cifar/cifar_cusum_size.RData")
+# }

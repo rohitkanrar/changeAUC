@@ -6,7 +6,7 @@ sys.path.insert(0, "./code/py")
 from generate_data.mean_shift import get_dense_shift_normal_mean, get_sparse_shift_normal_mean, get_normal_mean
 from generate_data.cov_shift import get_dense_shift_normal_cov, get_sparse_shift_normal_cov, \
     get_dense_diag_shift_normal_cov, get_sparse_diag_shift_normal_cov, get_dense_normal_cov, get_sparse_normal_cov
-from generate_data.moment_shift import get_dense_shift_normal_moment, get_sparse_shift_normal_moment, get_exponential
+from generate_data.moment_shift import get_dense_shift_normal_moment, get_sparse_shift_normal_moment, get_exponential, get_students_t
 from get_change_point.get_change_point_v1 import get_change_point
 
 # RUN: python code/py/simulation_scripts/simulation_changeAUC.py -d 1 -n 1000 -p 100 -r 100 -g sparse_mean -l local
@@ -71,6 +71,8 @@ for m in np.arange(args.reps):
         s_ = get_sparse_normal_cov(args.n, args.p, rho=args.delta)
     elif args.dgp.lower() == "exp_null":
         s_ = get_exponential(args.n, args.p)
+    elif args.dgp.lower() == "students_t":
+        s_ = get_students_t(args.n, args.p, df=args.delta)
     else:
         print("Invalid Data Generating Process (DGP).")
         sys.exit(0)
