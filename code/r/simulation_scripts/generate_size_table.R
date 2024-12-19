@@ -71,3 +71,4 @@ combined_table <- matrix(
 rownames(combined_table) <- rownames(size_all_dgp)
 
 xtable::xtable(combined_table)
+# saveRDS(combined_table, "output/combined_table.RData")

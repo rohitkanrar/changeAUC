@@ -99,7 +99,7 @@ for(dgp_ in dgp){
     }
   }
 }
-saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
+# saveRDS(final_cifar_table, "output/cifar/final_cifar_table.RData")
 xtable::xtable(final_cifar_table, digits = 4)
 
 # if(FALSE){
