@@ -27,9 +27,7 @@ get_sample_hr_max <- function(n = 100, T_ = 100000, epsilon = 0.15,
   hr <- sapply(1:n, function(i){
     r <- 2:(T_-1)
     br <- cumsum(rnorm(T_)) / sqrt(T_)
-    abs(
-      (br[r] - seq_T[r] * br[T_]) / sqrt(seq_T[r] * (1 - seq_T[r]))
-    )
+    (br[r] - seq_T[r] * br[T_]) / sqrt(seq_T[r] * (1 - seq_T[r]))
   })
   hr <- t(hr[trim:(T_-trim), ])
   apply(hr, 1, max)
