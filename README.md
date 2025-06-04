@@ -1,5 +1,5 @@
-This repository contains all the codes used in the following paper titled 
-- Kanrar, R., Jiang, F., Cai, Z. (2024+). Model-free Change-point Detection Using Modern Classifiers. [arXiv](https://arxiv.org/abs/2404.06995)
+This repository contains all the code used in the following paper: 
+- Kanrar, R., Jiang, F., Cai, Z. (2024+). Model-free Change-point Detection Using AUC of a Classifier. _Accepted under minor revision_, Journal of Machine Learning Research [arXiv](https://arxiv.org/abs/2404.06995)
 
 
 
@@ -38,7 +38,7 @@ The following paragraphs outline an overall description of the main sub folders 
 - This folder contains processed data sets used in the paper. We also provide reproducible code to access and process the data sets in the `/real_data` folder inside either `/code/r/` or `/code/py/`.
 
 ## Contents of `/output`:
-- This folder contains outputs created in the real data analysis. Other outputs created in the simulation experiments are omitted due to size limit in the Github repository. 
+- This folder contains output files created in the real data analysis. Other files created in the simulation experiments are omitted due to size limit in the Github repository. 
 
 
 ## Initial Setups:
@@ -119,4 +119,4 @@ python code/py/real_data/nyc_taxi/implement_script/changeAUC.py
 ```
 
 ## Acknowledgements 
-We thank the authors of [Chakraborty, Zhang 2021+](https://arxiv.org/abs/2105.08976) for sharing the R code implementation of their proposed method.
+We thank the authors of [Chakraborty, Zhang 2021+](https://arxiv.org/abs/2105.08976) for sharing the R code implementation of their proposed method. We also thank the [Information Technology Services (ITS)](https://www.it.iastate.edu/) at Iowa State for providing free access to High Performance Computing (HPC) cluster `Pronto.'  
